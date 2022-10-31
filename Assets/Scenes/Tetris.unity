@@ -713,7 +713,7 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: e776f0ebb88a54c89b5091d5894db017, type: 2}
   - tetromino: 6
     tile: {fileID: 11400000, guid: 5d427e8acadb84a278de190e579a325b, type: 2}
-  spawnPosition: {x: -1, y: 8, z: 0}
+  spawnPosition: {x: -1, y: 7, z: 0}
   boardSize: {x: 10, y: 20}
   color: 0
   colorArray: 0000000000000000000000000000000000000000
@@ -778,8 +778,8 @@ MonoBehaviour:
   - 0
   stepDelay: 1
   lockDelay: 0.5
-  moveDelay: 0.06
-  moveSpeed: 0.001
+  moveDelay: 0.1
+  moveSpeed: 0.05
 --- !u!114 &1556646934
 MonoBehaviour:
   m_ObjectHideFlags: 0

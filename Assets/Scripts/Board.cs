@@ -19,8 +19,8 @@ public class Board : MonoBehaviour {
     public TetrominoData holdTetromino { get; private set; }
     public bool holdStart = true;
     public bool holdOnce = true;
-    public int[] activePieceData = new int[2];
-    public int[] holdPieceData = new int[2];
+    public int[] activePieceData = new int[3];  //type of tetromino, color, orientation
+    public int[] holdPieceData = new int[3];    //orientation: 0 = north, 1 = east, 2 = south, 3 = west
     public int skillPoints;
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
@@ -74,6 +74,7 @@ public class Board : MonoBehaviour {
         this.activePieceData[0] = Random.Range(0, this.tetrominos.Length);
         TetrominoData data = this.tetrominos[this.activePieceData[0]];
         this.activePieceData[1] = Random.Range(0, 5);
+        this.activePieceData[2] = 0;
 
         this.activePiece.Initialize(this, this.spawnPosition, data);
 
@@ -90,6 +91,7 @@ public class Board : MonoBehaviour {
     public void SpawnPieceHold(){
         TetrominoData data = this.tetrominos[activePieceData[0]];
         Vector2Int[] holdData = Data.Cells[(Tetromino)holdPieceData[0]];
+        this.activePieceData[2] = 0;
 
         this.activePiece.Initialize(this, this.spawnPosition, data);
         
