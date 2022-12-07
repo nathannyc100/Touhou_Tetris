@@ -713,7 +713,7 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: e776f0ebb88a54c89b5091d5894db017, type: 2}
   - tetromino: 6
     tile: {fileID: 11400000, guid: 5d427e8acadb84a278de190e579a325b, type: 2}
-  spawnPosition: {x: -1, y: 7, z: 0}
+  spawnPosition: {x: -2, y: 7, z: 0}
   boardSize: {x: 10, y: 20}
   color: 0
   colorArray: 0000000000000000000000000000000000000000
@@ -722,9 +722,11 @@ MonoBehaviour:
   text: {fileID: 1537599881}
   holdStart: 1
   holdOnce: 1
-  activePieceData: 0000000000000000
-  holdPieceData: 0000000000000000
   skillPoints: 0
+  pieceSize: 4
+  typeArray: 00000000010000000200000003000000040000000500000006000000
+  tempTypeArray: 00000000010000000200000003000000040000000500000006000000
+  randomInt: 6
   holdPosition: {x: -10, y: 5, z: 0}
 --- !u!156049354 &1556646931
 Grid:
@@ -766,6 +768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b5c6efa42a448a08ba06425d8c26dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghost: {fileID: 1312073833}
   inputManage:
   - 0
   - 0

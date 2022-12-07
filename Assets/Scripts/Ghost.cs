@@ -22,11 +22,8 @@ public class Ghost : MonoBehaviour {
         Set();
     }
 
-    private void Clear(){
-        for (int i = 0; i < this.cells.Length; i++){
-            Vector3Int tilePosition = this.cells[i] + this.position;
-            this.tilemap.SetTile(tilePosition, null);
-        }
+    public void Clear(){
+        this.tilemap.ClearAllTiles();
     } 
 
     private void Copy(){
@@ -39,14 +36,14 @@ public class Ghost : MonoBehaviour {
         Vector3Int position = this.trackingPiece.position;
 
         int current = position.y; 
-        int bottom = -this.board.boardSize.y / 2 - 1;
+        int bottom = -this.board.boardSize.y / 2 - 2;
 
         this.board.Clear(this.trackingPiece);
 
         for (int row = current; row >= bottom; row--){
             position.y = row;
 
-            if (this.board.IsValidPosition(this.trackingPiece, position)){
+            if (this.board.IsValidPosition(this.trackingPiece, position, board.activePieceData.orient)){
                 this.position = position;
             } else {
                 break;
@@ -57,8 +54,8 @@ public class Ghost : MonoBehaviour {
     }
 
     private void Set(){
-        for (int i = 0; i < this.cells.Length; i++){
-            Vector3Int tilePosition = this.cells[i] + this.position;
+        for (int i = 0; i < board.pieceSize; i++){
+            Vector3Int tilePosition = (Vector3Int)Data.originalOrient[(board.activePieceData.type * 4) + board.activePieceData.orient, i] + this.position;      //piece.cells[i] + piece.position;
             this.tilemap.SetTile(tilePosition, this.tile);
         }
     }

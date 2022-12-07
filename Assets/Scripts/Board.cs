@@ -9,7 +9,7 @@ public class Board : MonoBehaviour {
     public TileBase[] tileColor;
     public TetrominoData[] tetrominos;
     public Vector3Int spawnPosition;
-    public Vector2Int boardSize = new Vector2Int(10, 20);
+    public Vector2Int boardSize = new Vector2Int(10, 24);
     public int color;
     public int[] colorArray; // red blue green yellow purple
     public int character;
@@ -19,9 +19,14 @@ public class Board : MonoBehaviour {
     public TetrominoData holdTetromino { get; private set; }
     public bool holdStart = true;
     public bool holdOnce = true;
-    public int[] activePieceData = new int[3];  //type of tetromino, color, orientation
-    public int[] holdPieceData = new int[3];    //orientation: 0 = north, 1 = east, 2 = south, 3 = west
+    public Data.PieceData activePieceData = new Data.PieceData();
+    public Data.PieceData holdPieceData = new Data.PieceData();
     public int skillPoints;
+    public int pieceSize = 4;
+    public int[] typeArray = new int[7] {0, 1, 2, 3, 4, 5, 6};
+    public int[] tempTypeArray = new int[7] {0, 1, 2, 3, 4, 5, 6};
+    public int randomInt = 6;
+    private int temp;
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
 
@@ -61,6 +66,12 @@ public class Board : MonoBehaviour {
 
     }
 
+    public void CopyArray(int[] targetArray, int[] destinationArray, int arrayLen){
+        for(int i = 0; i < arrayLen; i ++){
+            destinationArray[i] = targetArray[i];
+        }
+    }
+
     public void SwapArray(int[] array1, int[] array2, int arrayLen){
         int temp;
         for (int i = 0; i < arrayLen; i ++){
@@ -70,15 +81,34 @@ public class Board : MonoBehaviour {
         }
     }
 
-    public void SpawnPiece(){
-        this.activePieceData[0] = Random.Range(0, this.tetrominos.Length);
-        TetrominoData data = this.tetrominos[this.activePieceData[0]];
-        this.activePieceData[1] = Random.Range(0, 5);
-        this.activePieceData[2] = 0;
+    public void RemoveInt(int[] array, int num, int arrayLen){
+        for (int i = num; i < arrayLen; i ++){
+            array[i] = array[i + 1];
+        }
+    }
 
+    public int RandomPiece(){
+        int index = Random.Range(0, randomInt);
+        int num = tempTypeArray[index];
+        RemoveInt(tempTypeArray, index, randomInt);
+
+        randomInt --;
+        if (randomInt < 0){
+            randomInt = 6;
+            CopyArray(typeArray, tempTypeArray, 7);
+        }
+        
+        return num;
+    }
+
+    public void SpawnPiece(){
+        this.activePieceData.type = RandomPiece();
+        TetrominoData data = this.tetrominos[this.activePieceData.type];
+        this.activePieceData.color = Random.Range(0, 5);
+        this.activePieceData.orient = 0;
         this.activePiece.Initialize(this, this.spawnPosition, data);
 
-        if (IsValidPosition(this.activePiece, this.spawnPosition)){
+        if (IsValidPosition(this.activePiece, this.spawnPosition, 0)){
             Set(this.activePiece);
         } else {
             GameOver();
@@ -89,9 +119,11 @@ public class Board : MonoBehaviour {
 
     
     public void SpawnPieceHold(){
-        TetrominoData data = this.tetrominos[activePieceData[0]];
-        Vector2Int[] holdData = Data.Cells[(Tetromino)holdPieceData[0]];
-        this.activePieceData[2] = 0;
+        TetrominoData data = this.tetrominos[activePieceData.type];
+        Vector2Int[] holdData = new Vector2Int[4];
+        for (int i = 0; i < 4; i ++){
+            holdData[i] = Data.originalOrient[holdPieceData.type * 4, i];
+        }
 
         this.activePiece.Initialize(this, this.spawnPosition, data);
         
@@ -100,7 +132,7 @@ public class Board : MonoBehaviour {
         }
 
 
-        if (IsValidPosition(this.activePiece, this.spawnPosition)){
+        if (IsValidPosition(this.activePiece, this.spawnPosition, 0)){
             Set(this.activePiece);
         } else {
             GameOver();
@@ -112,7 +144,10 @@ public class Board : MonoBehaviour {
 
     
     public void HoldPieceInitialize(){
-        Vector2Int[] data = Data.Cells[(Tetromino)holdPieceData[0]];
+        Vector2Int[] data = new Vector2Int[4];
+        for (int i = 0; i < 4; i ++){
+            data[i] = Data.originalOrient[holdPieceData.type * 4, i];
+        }
     
         for (int i = 0; i < data.Length; i ++){
             this.holdPiece[i] = (Vector3Int)data[i];
@@ -126,9 +161,9 @@ public class Board : MonoBehaviour {
     }
 
     public void Set(Piece piece){
-        for (int i = 0; i < piece.cells.Length; i++){
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, this.tileColor[this.activePieceData[1]]);
+        for (int i = 0; i < pieceSize; i++){
+            Vector3Int tilePosition = (Vector3Int)Data.originalOrient[(activePieceData.type * 4) + activePieceData.orient, i] + piece.position;      //piece.cells[i] + piece.position;
+            this.tilemap.SetTile(tilePosition, this.tileColor[this.activePieceData.color]);
         }
     }
 
@@ -136,14 +171,14 @@ public class Board : MonoBehaviour {
     public void SetHold(Vector3Int[] holdPiece){
         for (int i = 0; i < holdPiece.Length; i++){
             Vector3Int holdGrid = holdPiece[i] + holdPosition;
-            this.tilemap.SetTile(holdGrid, this.tileColor[this.holdPieceData[1]]);
+            this.tilemap.SetTile(holdGrid, this.tileColor[this.holdPieceData.color]);
         }
     }
     
 
     public void Clear(Piece piece){
-        for (int i = 0; i < piece.cells.Length; i++){
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
+        for (int i = 0; i < pieceSize; i++){
+            Vector3Int tilePosition = (Vector3Int)Data.originalOrient[(activePieceData.type * 4) + activePieceData.orient, i] + piece.position;
             this.tilemap.SetTile(tilePosition, null);
         }
     }
@@ -153,15 +188,19 @@ public class Board : MonoBehaviour {
         if (holdOnce){
             if (holdStart){
                 Clear(this.activePiece);
-                for (int i = 0; i < 2; i ++){
-                    holdPieceData[i] = activePieceData[i];
-                }
+                holdPieceData.type = activePieceData.type;
+                holdPieceData.color = activePieceData.color;
                 holdStart = false;
                 HoldPieceInitialize();
                 SpawnPiece();
             } else {
                 Clear(this.activePiece);
-                SwapArray(holdPieceData, activePieceData, 2);
+                temp = holdPieceData.type;
+                holdPieceData.type = activePieceData.type;
+                activePieceData.type = temp;
+                temp = holdPieceData.color;
+                holdPieceData.color = activePieceData.color;
+                activePieceData.color = temp;
                 SpawnPieceHold();
             }
             ClearHold();
@@ -174,7 +213,7 @@ public class Board : MonoBehaviour {
 
     
     public void ClearHold(){
-        for (int i = -2; i < 3; i++){
+        for (int i = -2; i < 4; i++){
             for (int j = -2; j < 3; j ++){
                 Vector3Int holdGrid = holdPosition + new Vector3Int(i, j, 0);
                 this.tilemap.SetTile(holdGrid, null);
@@ -183,11 +222,12 @@ public class Board : MonoBehaviour {
     }
     
 
-    public bool IsValidPosition(Piece piece, Vector3Int position){
+    public bool IsValidPosition(Piece piece, Vector3Int position, int orient){
         RectInt bounds  = this.Bounds;
+        bounds.height = bounds.height + 2;
 
-        for (int i = 0; i < piece.cells.Length; i++){
-            Vector3Int tilePosition = piece.cells[i] + position;
+        for (int i = 0; i < pieceSize; i++){
+            Vector3Int tilePosition = (Vector3Int)Data.originalOrient[this.activePieceData.type * 4 + orient, i] + position;
 
             if (!bounds.Contains((Vector2Int)tilePosition)){
                 return false;
@@ -305,6 +345,8 @@ public class Board : MonoBehaviour {
 
                 position = new Vector3Int(col, row, 0);
                 this.tilemap.SetTile(position, above);
+
+
             }
 
             row ++;

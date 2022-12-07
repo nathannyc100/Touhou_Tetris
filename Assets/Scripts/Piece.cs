@@ -7,6 +7,7 @@ using TMPro;
 public class Piece : MonoBehaviour {
 
     public Board board { get; private set; }
+    public Ghost ghost;
     public TetrominoData data { get; private set; }
     public Vector3Int[] cells { get; private set; }
     public Vector3Int position { get; private set; }
@@ -58,7 +59,7 @@ public class Piece : MonoBehaviour {
         this.inputManage[0] = this.board.controls.Keyboard.Left.ReadValue<float>();
         this.inputManage[1] = this.board.controls.Keyboard.Right.ReadValue<float>();
 
-        if (this.inputManage[0] == 1){
+        if (this.inputManage[0] == 1 && this.inputManage[1] == 0){
             if (inputOnce[0]){
                 Move(Vector2Int.left);
                 inputOnce[0] = false;
@@ -74,7 +75,7 @@ public class Piece : MonoBehaviour {
             inputOnce[0] = true;
         }
 
-        if (this.inputManage[1] == 1){
+        if (this.inputManage[1] == 1 && this.inputManage[0] == 0){
             if (inputOnce[1]){
                 Move(Vector2Int.right);
                 inputOnce[1] = false;
@@ -112,6 +113,7 @@ public class Piece : MonoBehaviour {
 
     
     private void OnHold(){
+        ghost.Clear();
         this.board.Hold(this);
     }
 
@@ -140,12 +142,12 @@ public class Piece : MonoBehaviour {
         this.board.holdOnce = true;
     }
 
-    private bool Move(Vector2Int translation){
+    private bool  Move(Vector2Int translation){
         Vector3Int newPosition = this.position;
         newPosition.x += translation.x;
         newPosition.y += translation.y;
 
-        bool valid = this.board.IsValidPosition(this, newPosition);
+        bool valid = this.board.IsValidPosition(this, newPosition, board.activePieceData.orient);
 
         if (valid) {
             this.position = newPosition;
@@ -156,64 +158,36 @@ public class Piece : MonoBehaviour {
     }
 
     private void Rotate(int direction){
-        if (this.board.activePieceData[0] != 3){
-            Vector3Int newPosition = this.position;
-            Vector3Int[] newCells = new Vector3Int[this.cells.Length];
-            System.Array.Copy(this.cells, newCells, this.cells.Length);
+        int finalOrient = board.activePieceData.orient + direction;
 
-            
-            if (this.board.activePieceData[0] == 0){
-                if (direction == -1){
-                    
-                }
-            }
-            
+        if (finalOrient == -1){
+            finalOrient = 3;
+        } else if (finalOrient == 4){
+            finalOrient = 0;
+        }
+
+        if (TestSRS(finalOrient)){
+            ghost.Clear();
+            board.activePieceData.orient = finalOrient;
 
         }
-        
-        
     }
 
-    private bool TestSRS(int direction, Vector2Int[] array, int num){
+    private bool TestSRS(int finalOrient){
+        if (board.IsValidPosition(this, this.position, finalOrient)){
+            return true;
+        }
         for (int i = 0; i < 4; i ++){
-            this.cells[i] = (Vector3Int)array[i + 10 * num];
-        }
-        return false;
-    }
-
-
-
-    
-
-    private bool TestWallKicks(int rotationIndex, int rotationDirection){
-        int wallKickIndex = GetWallKickIndex(rotationIndex, rotationDirection);
-
-        for (int i = 0; i < this.data.wallKicks.GetLength(1); i++){
-            Vector2Int translation = this.data.wallKicks[wallKickIndex, i];
-
-            if (Move(translation)){
+            if (board.IsValidPosition(this, (Vector3Int)Data.SRS[(board.activePieceData.type - 1) * 32 + finalOrient * 4 + i] + this.position, finalOrient)){
+                Vector3Int temp = this.position;
+                temp.x += Data.SRS[(board.activePieceData.type - 1) * 32 + finalOrient * 4 + i].x;
+                temp.y += Data.SRS[(board.activePieceData.type - 1) * 32 + finalOrient * 4 + i].y;
+                this.position = temp;
                 return true;
             }
         }
 
-        return false; 
-    }
-
-    private int GetWallKickIndex(int rotationIndex, int rotationDirection){
-        int wallKickIndex = rotationIndex * 2;
-        if (rotationDirection < 0) {
-            wallKickIndex --;
-        }
-
-        return Wrap(wallKickIndex, 0, this.data.wallKicks.GetLength(0));
-    }
-
-    private int Wrap(int input, int min, int max){
-        if (input < min){
-            return max - (min - input) % (max - min);
-        } else {
-            return min + (input - min) % (max - min);
-        }
+        return false;
     }
      
 }
