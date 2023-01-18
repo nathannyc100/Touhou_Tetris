@@ -4,6 +4,7 @@ using TMPro;
 
 public class Board : MonoBehaviour {
     public Tilemap tilemap { get; private set; }
+    public Skills skills { get; private set; }
     public Piece activePiece { get; private set; }
     public Vector3Int[] holdPiece;
     public TileBase[] tileColor;
@@ -158,6 +159,7 @@ public class Board : MonoBehaviour {
     private void GameOver(){
         this.tilemap.ClearAllTiles();
         holdStart = true;
+        this.skills.skillPoints = 0;
     }
 
     public void Set(Piece piece){

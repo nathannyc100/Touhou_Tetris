@@ -1,74 +1,142 @@
 using UnityEngine;
 
-public class Skills : MonoBehaviour
-{
+public class Skills : MonoBehaviour {
+
+    public int damage { get; private set; }
+    public int health { get; private set; }
     public Board board { get; private set; }
-
-    public int[] hurt;
-    public int[] bigHurt;
-    public int[] hide;
-    public int[] bleed;
-    public int[] tarnish;
-    public int[] resent;
-    public int[] hunger;
-    public int[] crudeOil;
-    public int[] oil;
-    public int[] magic;
-    public int[] bloodThirst;
-    public int[] poisoned;
-    public int[] poisonSpell;
-    public int[] bannedSpell;
-    public int[] spellLock;
-    public int[] hallucination;
-
-    public float timer;
-
-
-
-    private void hurtCalc(){
-        if (Time.time - timer >= 1f){
-            if (checkSkill(hurt)){
-                this.board.health -= 5;
-            }
-            if (checkSkill(bigHurt)){
-                this.board.health -= 10;
-            }
-        }
-    }
-
-    private bool checkSkill(int[] array){
-        if (array[0] == 1){
-            if (array[1] >= array[2]){
-                array[1] = 0;
-                return true;
-            }
-            else {
-                array[1] ++;
-            }
-        }
-
-        return false; 
-    }
-
-    public void OnSkill1(){
-        if (this.board.skillPoints >= 1){
-            
-        }
-    }
-
-    public void OnSkill2(){
-
-    }
-
-    public void OnSkill3(){
-
-    }
-
-    public void OnSkill4(){
-
-    }
-
-
-
+    public int character { get; private set; }
+    public int skillPoints = 0;
+ 
     
+    public Data.Skills[] skills = new Data.Skills[10];
+
+    public void DamageCalc(int character, int[] color){
+        damage = 0;
+        float attack = Data.Characters[character].attack;
+        float[] multiplier = Data.Characters[character].multiplier;
+
+        for (int i = 0; i < 5; i ++){
+            damage += Mathf.CeilToInt(attack * color[i] * multiplier[i]);
+        }
+        
+        health -= damage;
+    }
+
+    public void SkillUpdate(){
+        character = this.board.character;
+        for (int i = 0; i < skills.Length; i ++){
+            switch (this.skills[i].type) {
+                case 1: 
+
+
+                
+                
+                default: break;
+            }
+        }
+    }
+
+    public void Hurt(int stacks){
+        this.board.health -= 5;
+    }
+
+    public void BigHurt(int stacks){
+        this.board.health -= 5;
+    }
+
+    public void Bleed(int stacks, int character){
+        int amount = Mathf.RoundToInt(Data.Characters[character].health * stacks * 0.01f);
+        this.board.health -= amount;
+    }
+
+    public void Burn(int stacks){
+
+    }
+
+    public void Regen(){
+        int health = this.board.health + 50;
+        if (health > Data.Characters[character].health){
+            this.board.health = Data.Characters[character].health;
+        } else {
+            this.board.health = health;
+        }
+    }
+
+    public void Drunk(){
+
+    }
+
+    public void DrunkAF(){
+
+    }
+
+    public void Blind(){
+
+    }
+
+    public void Poison(int stacks){
+        int temp;
+        switch (stacks)
+        {
+            case 1:
+                temp = 3;
+                break;
+            case 2:
+                temp = 5;
+                break;
+            case 3:
+                temp = 10;
+                break;
+            default:
+                temp = 0;
+                break;
+        }
+        this.board.health -= temp;
+    }
+
+    public void PoisonSpell(){
+        this.board.health -= 5;
+    }
+
+    public void Spell(){
+        this.board.health -= 2;
+    }
+
+    public void SpellBind(){
+
+    }
+
+    public void Berserk(){
+
+    }
+
+    public void Hallucination(){
+
+    }
+
+    public void ExtremePoison(int character){
+        int amount = Mathf.RoundToInt(Data.Characters[character].health * 0.01f);
+        this.board.health -= amount;
+    }
+
+    public void Venom(){
+        this.board.health -= 1;
+    }
+
+    public void Chaos(){
+
+    }
+
+    public void AntiHeal(){
+
+    }
+
+
+
+
+
+
+
+
 }

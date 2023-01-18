@@ -113,7 +113,7 @@ public class Piece : MonoBehaviour {
 
     
     private void OnHold(){
-        ghost.Clear();
+        this.ghost.Clear();
         this.board.Hold(this);
     }
 
