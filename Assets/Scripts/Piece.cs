@@ -1,21 +1,25 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using TMPro;
+using System;
 
 public class Piece : MonoBehaviour {
 
-    public Board board { get; private set; }
+    public Board board;
     public Ghost ghost;
-    public TetrominoData data { get; private set; }
-    public Vector3Int[] cells { get; private set; }
-    public Vector3Int position { get; private set; }
-    public int rotationIndex { get; private set; }
+    public TetrominoData data;
+    public Vector3Int[] cells;
+    public Vector3Int position;
+    public int rotationIndex;
     public float[] inputManage = new float[2];
     public bool[] inputOnce = new bool[2] {true, true};
     public float[] inputTimer = new float[2];
     public float[] inputInitialTimer = new float[2];
+
+    public event EventHandler<OnSkillPressedEventArgs> OnSkillPressed;
+    public class OnSkillPressedEventArgs : EventArgs {
+        public CharacterData.SkillName id;
+    }
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
@@ -34,7 +38,7 @@ public class Piece : MonoBehaviour {
         this.previousTime = Time.time;
         this.lockTime= 0f;
 
-        if (this.cells == null){
+        if (this.cells.Length != data.cells.Length){
             this.cells = new Vector3Int[data.cells.Length];
         }
 
@@ -106,6 +110,31 @@ public class Piece : MonoBehaviour {
                 Step();
             }
         }
+
+        if (this.board.controls.Keyboard.Skill1.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.Skill1 } );
+        }
+
+        if (this.board.controls.Keyboard.Skill2.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.Skill2 } );
+        }
+
+        if (this.board.controls.Keyboard.Skill3.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.Skill3 } );
+        }
+
+        if (this.board.controls.Keyboard.Skill4.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.Skill4 } );
+        }
+
+        if (this.board.controls.Keyboard.Skill5.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.Skill5 } );
+        }
+
+        if (this.board.controls.Keyboard.SkillFinal.triggered){
+            OnSkillPressed?.Invoke(this, new OnSkillPressedEventArgs { id = CharacterData.SkillName.SkillFinal } );
+        }
+
         
 
         this.board.Set(this);
@@ -142,7 +171,7 @@ public class Piece : MonoBehaviour {
         this.board.holdOnce = true;
     }
 
-    private bool  Move(Vector2Int translation){
+    private bool Move(Vector2Int translation){
         Vector3Int newPosition = this.position;
         newPosition.x += translation.x;
         newPosition.y += translation.y;

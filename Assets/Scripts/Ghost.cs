@@ -3,12 +3,15 @@ using UnityEngine.Tilemaps;
 
 public class Ghost : MonoBehaviour {
     public Tile tile;
+
+    [SerializeField]
     public Board board;
+    [SerializeField]
     public Piece trackingPiece;
 
-    public Tilemap tilemap { get; private set; }
-    public Vector3Int[] cells { get; private set; }
-    public Vector3Int position { get; private set; }
+    public Tilemap tilemap;
+    public Vector3Int[] cells;
+    public Vector3Int position;
 
     private void Awake(){
         this.tilemap = GetComponentInChildren<Tilemap>();

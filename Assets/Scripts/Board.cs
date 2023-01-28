@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using TMPro;
+using System;
 
 public class Board : MonoBehaviour {
-    public Tilemap tilemap { get; private set; }
-    public Skills skills { get; private set; }
-    public Piece activePiece { get; private set; }
+    
+    public Tilemap tilemap;
+    public NetworkManager networkManager;
+    public Skills skills;
+    public Piece activePiece;
     public Vector3Int[] holdPiece;
     public TileBase[] tileColor;
     public TetrominoData[] tetrominos;
@@ -14,10 +16,7 @@ public class Board : MonoBehaviour {
     public int color;
     public int[] colorArray; // red blue green yellow purple
     public int character;
-    public int damage { get; private set; }
-    public int health;
-    public TextMeshProUGUI text;
-    public TetrominoData holdTetromino { get; private set; }
+    public TetrominoData holdTetromino;
     public bool holdStart = true;
     public bool holdOnce = true;
     public Data.PieceData activePieceData = new Data.PieceData();
@@ -28,6 +27,13 @@ public class Board : MonoBehaviour {
     public int[] tempTypeArray = new int[7] {0, 1, 2, 3, 4, 5, 6};
     public int randomInt = 6;
     private int temp;
+
+    public event EventHandler<LineClearedEventArgs> LineCleared;
+    public event EventHandler ResetGame;
+    
+    public class LineClearedEventArgs : EventArgs {
+        public int[] colorArray;
+    }
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
 
@@ -50,7 +56,6 @@ public class Board : MonoBehaviour {
         for (int i = 0; i < this.tetrominos.Length; i ++){
             this.tetrominos[i].Initialize();
         }
-
     }
 
     private void OnEnable(){
@@ -62,7 +67,8 @@ public class Board : MonoBehaviour {
     }
 
     public void Start(){
-        PrintHealth();
+        ResetGame?.Invoke(this, EventArgs.Empty);
+
         SpawnPiece();
 
     }
@@ -89,7 +95,7 @@ public class Board : MonoBehaviour {
     }
 
     public int RandomPiece(){
-        int index = Random.Range(0, randomInt);
+        int index = UnityEngine.Random.Range(0, randomInt);
         int num = tempTypeArray[index];
         RemoveInt(tempTypeArray, index, randomInt);
 
@@ -105,7 +111,7 @@ public class Board : MonoBehaviour {
     public void SpawnPiece(){
         this.activePieceData.type = RandomPiece();
         TetrominoData data = this.tetrominos[this.activePieceData.type];
-        this.activePieceData.color = Random.Range(0, 5);
+        this.activePieceData.color = UnityEngine.Random.Range(0, 5);
         this.activePieceData.orient = 0;
         this.activePiece.Initialize(this, this.spawnPosition, data);
 
@@ -157,9 +163,9 @@ public class Board : MonoBehaviour {
     
 
     private void GameOver(){
+        ResetGame?.Invoke(this, EventArgs.Empty);
         this.tilemap.ClearAllTiles();
         holdStart = true;
-        this.skills.skillPoints = 0;
     }
 
     public void Set(Piece piece){
@@ -250,32 +256,14 @@ public class Board : MonoBehaviour {
         while (row < bounds.yMax){
             if (IsLineFull(row)){
                 GetLineColor(row);
-                DamageCalc(character, colorArray);
-                PrintHealth();
                 LineClear(row);
+                LineCleared?.Invoke(this, new LineClearedEventArgs { colorArray = this.colorArray } );
             } else {
                 row++;
             }
         }
 
 
-    }
-
-    
-    public void DamageCalc(int character, int[] color){
-        damage = 0;
-        float attack = Data.Characters[character].attack;
-        float[] multiplier = Data.Characters[character].multiplier;
-
-        for (int i = 0; i < 5; i ++){
-            damage += Mathf.CeilToInt(attack * color[i] * multiplier[i]);
-        }
-        
-        health -= damage;
-    }
-    
-    public void PrintHealth(){
-        text.text = health.ToString();
     }
 
     public void ClearColorArray(){
@@ -288,6 +276,8 @@ public class Board : MonoBehaviour {
         RectInt bounds = this.Bounds;
         TileBase tileName;
         string name;
+        ClearColorArray();
+
         for (int col = bounds.xMin; col < bounds.xMax; col++){
             Vector3Int position = new Vector3Int(col, row, 0);
             tileName = tilemap.GetTile(position);
@@ -295,8 +285,6 @@ public class Board : MonoBehaviour {
             if (ColorIndex(name) != 5){
                 colorArray[ColorIndex(name)] += 1;
             }
-        }
-        for (int i = 0; i < 5; i++){
         }
     }
 

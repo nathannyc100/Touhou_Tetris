@@ -1,17 +1,43 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class Text : MonoBehaviour
 {
-    public Piece piece;
-    public TextMeshProUGUI text;
+    [SerializeField]
+    private Board board;
+    [SerializeField]
+    private Health health;
+    [SerializeField]
+    private Mana mana;
+
+    [SerializeField]
+    private TextMeshProUGUI characterName;
+    [SerializeField]
+    private TextMeshProUGUI healthText;
+    [SerializeField]
+    private TextMeshProUGUI manaText;
+
+
     public int num = 0;
 
-    // Update is called once per frame
-    void Update()
-    {
-        num += 1;
-        //text.text = this.piece.position.x.ToString();
+    private void OnEnable(){
+        health.HealthChanged += When_HealthChanged;
+        mana.ManaChanged += When_ManaChanged;
+        
     }
+
+    private void Start(){
+        characterName.text = CharacterData.Characters[board.character].name;
+    }
+
+    private void When_HealthChanged(object sender, Health.HealthChangedEventArgs e){
+        healthText.text = e.health.ToString();
+    }
+
+    private void When_ManaChanged(object sender, Mana.ManaChangedEventArgs e){
+        manaText.text = e.mana.ToString();
+    }
+
 }
