@@ -14,20 +14,28 @@ public class Skills : MonoBehaviour {
     [SerializeField]
     private Timing timing;
 
-    public int[] skillOn;
+    public int[] skillCD;
     private int buffTagCount;
-    private bool skillFinalAvailable;
     private CharacterData.SkillName skillTagCount;
 
+    // Final skill variables
+    private int skillFinalInitialCooldown;
+    private bool skillFinalNoInitialCooldown = true;
+    private int skillFinalRegularCooldown = 60;
+    private bool finalSkillReusable = false;
+    private bool finalSkillUsed = false;
+
+    // Event Handlers
     public event EventHandler<AddBuffsEventArgs> AddBuffs;
     public event EventHandler<HealEventArgs> Heal;
     public event EventHandler<DamageEventArgs> Damage;
     public event EventHandler NotEnoughMana;
-    public event EventHandler SpellBinded;
+    public event EventHandler<SkillBindedEventArgs> SpellBinded;
     public event EventHandler<DecreaseManaEventArgs> DecreaseMana;
     // public event EventHandler SkillIsAlreadyOn;
     public event EventHandler<SkillTriggeredEventArgs> SkillTriggered;
     public event EventHandler FinalSkillStillLocked;
+    public event EventHandler FinalSkillAlreadyUsed;
 
     public class AddBuffsEventArgs : EventArgs {
         public CharacterData.BuffName id;
@@ -48,6 +56,10 @@ public class Skills : MonoBehaviour {
         public int amount;
     }
 
+    public class SkillBindedEventArgs : EventArgs {
+        public CharacterData.SkillName id;
+    }
+
     public class DecreaseManaEventArgs : EventArgs {
         public int amount;
     }
@@ -63,19 +75,26 @@ public class Skills : MonoBehaviour {
     }
 
     private void When_ResetGame_InitializeSkills(object sender, EventArgs e){
-        skillOn = new int[] { 0, 0, 0, 0, 0, 0 };
-        skillFinalAvailable = false;
+        skillCD = new int[] { 0, 0, 0, 0, 0, 0 };
+
+        if (skillFinalNoInitialCooldown){
+            skillFinalInitialCooldown = 0;
+        } else {
+            skillFinalInitialCooldown = skillFinalRegularCooldown;
+        }
+
+        finalSkillUsed = false;
     }
 
     private void When_TimeIncrement(object sender, Timing.TimeIncrementEventArgs e){
-        for (int i = 0; i < skillOn.Length; i ++){
-            if (skillOn[i] > 0){
-                skillOn[i] -= (int)timing.increment;
+        for (int i = 0; i < skillCD.Length; i ++){
+            if (skillCD[i] > 0){
+                skillCD[i] -= (int)timing.increment;
             }
         }
 
-        if(e.time > 60){
-            skillFinalAvailable = true;
+        if (skillFinalInitialCooldown > 0){
+            skillFinalInitialCooldown --;
         }
     }
 
@@ -85,12 +104,17 @@ public class Skills : MonoBehaviour {
 
         // check if skill is already on, used if skill can't be proced when on uptime
         //
-        // if (skillOn[(int)e.id] != 0){
+        // if (skillCD[(int)e.id] != 0){
         //     SkillIsAlreadyOn?.Invoke(this, EventArgs.Empty);
         //     return;
         // }
 
-        if (skillFinalAvailable == false && e.id == CharacterData.SkillName.SkillFinal){
+        if (skillCD[(int)e.id] > 0){
+            Debug.Log("Skill in cd: " + skillCD[(int)e.id]);
+            return;
+        } 
+
+        if (skillFinalInitialCooldown > 0 && e.id == CharacterData.SkillName.SkillFinal){
             FinalSkillStillLocked?.Invoke(this, EventArgs.Empty);
             return;
         }
@@ -101,10 +125,18 @@ public class Skills : MonoBehaviour {
         }
 
         if (buffs.totalBuffs.SpellBind[(int)e.id] == true || buffs.totalBuffs.SpellBindAll == true){
-            SpellBinded?.Invoke(this, EventArgs.Empty);
+            SpellBinded?.Invoke(this, new SkillBindedEventArgs { id = e.id } );
             return;
         }
 
+        if (e.id == CharacterData.SkillName.SkillFinal && finalSkillUsed){
+            FinalSkillAlreadyUsed?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        if (e.id == CharacterData.SkillName.SkillFinal && finalSkillReusable == false){
+            finalSkillUsed = true;
+        }
 
         DecreaseMana?.Invoke(this, new DecreaseManaEventArgs { amount = manaCost } );
         TriggerSkill(e.id);
@@ -115,17 +147,28 @@ public class Skills : MonoBehaviour {
         buffTagCount = 0;
         skillTagCount = id;
 
+        // Set skill cd if there is one
+        if (CharacterData.skillData[board.character - 1, (int)id].CD != 0){
+            skillCD[(int)id] = CharacterData.skillData[board.character - 1, (int)id].CD;
+        }
+
         foreach (CharacterData.SkillConstruct skillConstruct in CharacterData.skillData[board.character - 1, (int)id].construct){
 
             switch (skillConstruct.id)
             {
+                case CharacterData.ConstructName.BanKeypress :
+                    BanKeypress(skillConstruct.keypress, skillConstruct.duration);
+                    break;
+                case CharacterData.ConstructName.BlockColorAttackBuff :
+                    BlockColorAttackBuff(skillConstruct.blockColor, skillConstruct.amount, skillConstruct.duration);
+                    break;
+                case CharacterData.ConstructName.ChangeAllColorPercentage :
+
                 case CharacterData.ConstructName.ChangeManaRegen :
                     ChangeManaRegen(skillConstruct.amount, skillConstruct.duration);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.ChangeSelfColorPercentage :
                     ChangeSelfColorPercentage(skillConstruct.amount, skillConstruct.duration, skillConstruct.blockColor);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.DamageFixed :
                     DamageFixed(skillConstruct.amount);
@@ -135,19 +178,15 @@ public class Skills : MonoBehaviour {
                     break;
                 case CharacterData.ConstructName.SpellBind :
                     SpellBind(skillConstruct.amount, skillConstruct.duration);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.SpellBindAll :
                     SpellBindAll(skillConstruct.duration);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.SelfBuffMultiplier :
                     SelfBuffMultiplier(skillConstruct.amount, skillConstruct.duration);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.StopRegularAttack :
                     StopRegularAttack(skillConstruct.duration);
-                    AddToSkillOn(id, skillConstruct.duration);
                     break;
                 default: 
                     break;
@@ -157,6 +196,18 @@ public class Skills : MonoBehaviour {
         }
 
         SkillTriggered?.Invoke(this, new SkillTriggeredEventArgs { id = id } );
+    }
+
+    private void BanKeypress(CharacterData.Keypress key, int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.BanKeypress, skillTag = skillTagCount, buffTag = buffTagCount, key = key, duration = duration } );
+    }
+
+    private void BlockColorAttackBuff(CharacterData.Color color, float amount, int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.BlockColorAttackBuff, skillTag = skillTagCount, buffTag = buffTagCount, color = color, buffAmount = amount, duration = duration } );
+    }
+
+    private void ChangeAllColorPercentage(CharacterData.Color color, float amount, int duration){
+
     }
 
     private void ChangeManaRegen(int regenMultiplier, int duration){
@@ -176,7 +227,8 @@ public class Skills : MonoBehaviour {
     }
 
     private void SpellBind(int amountOfSpells, int duration){
-        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.SpellBind, skillTag = skillTagCount, buffTag = buffTagCount, buffAmount = amountOfSpells, duration = duration } );
+        int selecterValue = 0;
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.SpellBind, skillTag = skillTagCount, buffTag = buffTagCount, buffAmount = amountOfSpells, selecterValue = selecterValue, duration = duration } );
     }
 
     private void SpellBindAll(int duration){
@@ -191,9 +243,6 @@ public class Skills : MonoBehaviour {
         AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.StopRegularAttack, skillTag = skillTagCount, buffTag = buffTagCount, duration = duration } );
     }
 
-    private void AddToSkillOn(CharacterData.SkillName skillName, int duration){
-        skillOn[(int)skillName] = duration;
-    }
 
 
 

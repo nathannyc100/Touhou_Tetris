@@ -5,7 +5,7 @@ using System;
 
 public class Buffs : MonoBehaviour
 {
-
+    //class for handling all buffs in character
     public class CharacterBuffs {
         public CharacterData.BuffName id;
         public CharacterData.SkillName skillTag;
@@ -18,6 +18,7 @@ public class Buffs : MonoBehaviour
         public CharacterData.Keypress key;
     }
 
+    //class for handling total buffs, eg sum of buffs
     public class TotalBuffs {
         public bool[] SpellBind;
         public bool SpellBindAll;
@@ -31,12 +32,8 @@ public class Buffs : MonoBehaviour
         public bool ClearBan;
         public bool Invisibility;
         public float SpellEffect;
+        public bool StopRegularAttack;
         public bool StopTime;
-    }
-
-    public class BuffTag {
-        public int skill;
-        public int buff;
     }
 
     [SerializeField]
@@ -62,6 +59,7 @@ public class Buffs : MonoBehaviour
         timing.TimeIncrement += When_TimeIncrement;
     }
 
+    // reset buff values when game reset
     private void When_ResetGame_InitializeBuffs(object sender, EventArgs e){
         totalBuffs = new TotalBuffs {};
         characterBuffs = new List<CharacterBuffs>();
@@ -69,6 +67,7 @@ public class Buffs : MonoBehaviour
         InitializeBuffs();
     }
 
+    // reset total buff values when game reset
     private void InitializeBuffs(){
         totalBuffs.BlockColorDamageBuff = new float[] { 1f, 1f, 1f, 1f, 1f };
         totalBuffs.BlockColorSpawnPercentage = new float[] { 1f, 1f, 1f, 1f, 1f };
@@ -79,12 +78,14 @@ public class Buffs : MonoBehaviour
         totalBuffs.ManaRegen = 1f;
         totalBuffs.SelfDamageMultiplier = 1f;
         totalBuffs.SelfDefenseMultiplier = 1f;
-        totalBuffs.SpellBind = new bool[] { false, false, false, false, false };
+        totalBuffs.SpellBind = new bool[] { false, false, false, false, false, false };
         totalBuffs.SpellBindAll = false;
         totalBuffs.SpellEffect = 1f;
+        totalBuffs.StopRegularAttack = false;
         totalBuffs.StopTime = false;
     }
 
+    // function to add buff to list when event triggered, first check if there is the same buff already on the list 
     private void When_AddBuffs(object sender, Skills.AddBuffsEventArgs e){
         foreach (CharacterBuffs buffs in characterBuffs){
             if (buffs.skillTag == e.skillTag && buffs.buffTag == e.buffTag){
@@ -96,21 +97,22 @@ public class Buffs : MonoBehaviour
         AddBuffsToList(e);
     }
 
+    // add buff to list
     private void AddBuffsToList(Skills.AddBuffsEventArgs e){
         characterBuffs.Add( new CharacterBuffs { id = e.id, skillTag = e.skillTag, buffTag = e.buffTag, buffAmount = e.buffAmount, selecterValue = e.selecterValue, color = e.color, key = e.key, duration = e.duration, currentTime = 0 } );
         RecalculateTotalBuffs();
     }
 
+    // function to handle buff uptime everytime time ticks
     private void When_TimeIncrement(object sender, Timing.TimeIncrementEventArgs e){
         if (characterBuffs != null){
             foreach (CharacterBuffs buffs in characterBuffs){
                 if (buffs.duration != 0){
                     buffs.currentTime += (int)timing.increment;
                 }
-
-                Debug.Log(buffs.currentTime);
             }
 
+            // reiterate if buff is removed, or else the foreach will break
             IterateAgain :
             foreach (CharacterBuffs buffs in characterBuffs){
                 if (buffs.currentTime >= buffs.duration){
@@ -125,9 +127,11 @@ public class Buffs : MonoBehaviour
 
         if (calculateTotaluffs == true){
             RecalculateTotalBuffs();
+            calculateTotaluffs = false;
         }
     }
 
+    // recalculate total buffs
     private void RecalculateTotalBuffs(){
         InitializeBuffs();
 
@@ -165,7 +169,7 @@ public class Buffs : MonoBehaviour
                     totalBuffs.SpellBindAll = true;
                     break;
                 case CharacterData.BuffName.StopRegularAttack :
-                    selfDamageMultiplier = 0;
+                    totalBuffs.StopRegularAttack = true;
                     break;
                 default:
                     break;

@@ -101,6 +101,7 @@ public static class CharacterData
         
         public int manaCost;
         public string skillName;
+        public int CD;
         public SkillConstruct[] construct;
     }
 
@@ -151,7 +152,7 @@ public static class CharacterData
 
     public static readonly SkillData[,] skillData = new SkillData[,]{
         {   
-            new SkillData { manaCost = 15, skillName = "夢符[封魔陣]", construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.SpellBind, amount = 2, duration = 20 } } }, 
+            new SkillData { manaCost = 15, skillName = "夢符[封魔陣]", CD = 60, construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.SpellBind, amount = 2, duration = 20 } } }, 
             new SkillData { manaCost = 10, skillName = "空中飛翔的不可思議巫女", construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.SelfBuffMultiplier, amount = 2, duration = 20 }, new SkillConstruct { id = ConstructName.SelfDebuffMultiplier, amount = 2, duration = 20 } } },
             new SkillData { manaCost = 25, skillName = "神技[八方龍殺陣]", construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.RemoveSelfBlocks, amount = 4, duration = 0, blockOrient = BlockRemoveOrient.Horizontal }, new SkillConstruct { id = ConstructName.DamageChanging, amount = 50, duration = 0, dependentValue = DependentValues.BlocksRemoved }, new SkillConstruct { id = ConstructName.ChangeAllColorPercentage, duration = 0, percentage = 0.15f, blockColor = Color.Red }, new SkillConstruct { id = ConstructName.ChangeAllColorPercentage, duration = 0, percentage = -0.15f, blockColor = Color.Purple } } },
             new SkillData { manaCost = 15, skillName = "靈符[陰陽玉]", construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.StopRegularAttack, duration = 20 } } },

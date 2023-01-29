@@ -14,9 +14,12 @@ public class Health : MonoBehaviour
 
     public int health;
     private int damage;
+    private int sendDamage;
+    private bool sendDamageBool;
 
     public event EventHandler<DamageDeltEventArgs> DamageDelt;
     public event EventHandler<HealthChangedEventArgs> HealthChanged;
+    public event EventHandler RegularAttackStopped;
 
     public class DamageDeltEventArgs : EventArgs {
         public int damage;
@@ -32,7 +35,28 @@ public class Health : MonoBehaviour
         skills.Heal += When_Heal;
     }
 
+    private void LateUpdate(){
+        
+        // Multiple line clear damage sending 
+        if (sendDamage != 0){
+            if (sendDamageBool == false){
+                DamageDelt?.Invoke(this, new DamageDeltEventArgs { damage = sendDamage } );
+                sendDamage = 0;
+            }
+        }
+
+        if (sendDamageBool){
+            sendDamageBool = false;
+        }
+        
+    }
+
     private void When_LineCleared_DamageCalc(object sender, Board.LineClearedEventArgs e){
+        if (buffs.totalBuffs.StopRegularAttack){
+            RegularAttackStopped?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
         damage = 0;
         float attack = CharacterData.Characters[board.character].attack;
         float[] multiplier = CharacterData.Characters[board.character].multiplier;
@@ -44,8 +68,7 @@ public class Health : MonoBehaviour
         }
         
         health -= damage;
-
-        DamageDelt?.Invoke(this, new DamageDeltEventArgs { damage = this.damage } );
+        AddDamageToSendLineDamage(damage);
         HealthChanged?.Invoke(this, new HealthChangedEventArgs { health = this.health } );
     }
 
@@ -61,5 +84,10 @@ public class Health : MonoBehaviour
         //     health = CharacterData.Characters[board.character].health;
         // }
         HealthChanged?.Invoke(this, new HealthChangedEventArgs { health = this.health } );
+    }
+
+    private void AddDamageToSendLineDamage(int damage){
+        this.sendDamage += damage;
+        this.sendDamageBool = true;
     }
 }
