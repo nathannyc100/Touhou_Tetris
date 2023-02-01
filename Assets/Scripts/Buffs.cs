@@ -32,6 +32,7 @@ public class Buffs : MonoBehaviour
         public bool ClearBan;
         public bool Invisibility;
         public float SpellEffect;
+        public bool StopClearing;
         public bool StopRegularAttack;
         public bool StopTime;
     }
@@ -81,6 +82,7 @@ public class Buffs : MonoBehaviour
         totalBuffs.SpellBind = new bool[] { false, false, false, false, false, false };
         totalBuffs.SpellBindAll = false;
         totalBuffs.SpellEffect = 1f;
+        totalBuffs.StopClearing = false;
         totalBuffs.StopRegularAttack = false;
         totalBuffs.StopTime = false;
     }
@@ -167,6 +169,9 @@ public class Buffs : MonoBehaviour
                     break;
                 case CharacterData.BuffName.SpellBindAll :
                     totalBuffs.SpellBindAll = true;
+                    break;
+                case CharacterData.BuffName.StopClearing :
+                    totalBuffs.StopClearing = true;
                     break;
                 case CharacterData.BuffName.StopRegularAttack :
                     totalBuffs.StopRegularAttack = true;

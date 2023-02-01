@@ -1245,10 +1245,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720dc4e5b138a413ba3787c001913300, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buffs: {fileID: 985738460}
+  gameManager: {fileID: 3563113347322380416, guid: 1b58be185831b4cdca983e79ea125e88, type: 3}
   tilemap: {fileID: 0}
   networkManager: {fileID: 0}
-  skills: {fileID: 0}
-  activePiece: {fileID: 0}
+  skills: {fileID: 985738457}
+  activePiece: {fileID: 1556646933}
   holdPiece:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -1286,7 +1288,7 @@ MonoBehaviour:
   boardSize: {x: 10, y: 20}
   color: 0
   colorArray: 0000000000000000000000000000000000000000
-  character: 1
+  character: 18
   holdTetromino:
     tetromino: 0
     tile: {fileID: 0}

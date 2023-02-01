@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Data
 {
@@ -11,6 +12,11 @@ public static class Data
         public int type;
         public int color;
         public int orient;
+    }
+
+    public static GameManager GetGameManager(){
+        GameObject gameManager = GameObject.Find("GameManager");
+        return gameManager.GetComponent<GameManager>();
     }
 
     

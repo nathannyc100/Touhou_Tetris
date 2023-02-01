@@ -17,6 +17,7 @@ public class Skills : MonoBehaviour {
     public int[] skillCD;
     private int buffTagCount;
     private CharacterData.SkillName skillTagCount;
+    private int blockRemoveCount;
 
     // Final skill variables
     private int skillFinalInitialCooldown;
@@ -46,6 +47,7 @@ public class Skills : MonoBehaviour {
         public int selecterValue;
         public CharacterData.Color color;
         public CharacterData.Keypress key;
+        public string other;
     }
 
     public class HealEventArgs : EventArgs {
@@ -100,7 +102,7 @@ public class Skills : MonoBehaviour {
 
     private void When_OnSkillPressed(object sender, Piece.OnSkillPressedEventArgs e){
         int character = board.character;
-        int manaCost = CharacterData.skillData[character - 1, (int)e.id].manaCost;
+        int manaCost = CharacterData.skillData[character, (int)e.id].manaCost;
 
         // check if skill is already on, used if skill can't be proced when on uptime
         //
@@ -147,12 +149,14 @@ public class Skills : MonoBehaviour {
         buffTagCount = 0;
         skillTagCount = id;
 
+        blockRemoveCount = 0;
+
         // Set skill cd if there is one
-        if (CharacterData.skillData[board.character - 1, (int)id].CD != 0){
-            skillCD[(int)id] = CharacterData.skillData[board.character - 1, (int)id].CD;
+        if (CharacterData.skillData[board.character, (int)id].CD != 0){
+            skillCD[(int)id] = CharacterData.skillData[board.character, (int)id].CD;
         }
 
-        foreach (CharacterData.SkillConstruct skillConstruct in CharacterData.skillData[board.character - 1, (int)id].construct){
+        foreach (CharacterData.SkillConstruct skillConstruct in CharacterData.skillData[board.character, (int)id].construct){
 
             switch (skillConstruct.id)
             {
@@ -163,18 +167,49 @@ public class Skills : MonoBehaviour {
                     BlockColorAttackBuff(skillConstruct.blockColor, skillConstruct.amount, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.ChangeAllColorPercentage :
-
+                    ChangeAllColorPercentage(skillConstruct.blockColor, skillConstruct.amount, skillConstruct.duration);
+                    break;
+                case CharacterData.ConstructName.ChangeBlockColor :
+                    ChangeBlockColor();
+                    break;
                 case CharacterData.ConstructName.ChangeManaRegen :
                     ChangeManaRegen(skillConstruct.amount, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.ChangeSelfColorPercentage :
                     ChangeSelfColorPercentage(skillConstruct.amount, skillConstruct.duration, skillConstruct.blockColor);
                     break;
+                case CharacterData.ConstructName.DamageChanging :
+                    DamageChanging(skillConstruct.amount, skillConstruct.dependentValue);
+                    break;
                 case CharacterData.ConstructName.DamageFixed :
                     DamageFixed(skillConstruct.amount);
                     break;
+
+                case CharacterData.ConstructName.EnemyBuffMultiplier :
+                case CharacterData.ConstructName.EnemyBuffPercentage :
+                case CharacterData.ConstructName.EnemyDebuffMultiplier :
+                case CharacterData.ConstructName.EnemyDebuffPercentage :
+
+                case CharacterData.ConstructName.HealChangeing :
+                    HealChangeing(skillConstruct.amount, skillConstruct.dependentValue);
+                    break;
                 case CharacterData.ConstructName.HealFixed :
                     HealFixed(skillConstruct.amount);
+                    break;
+                case CharacterData.ConstructName.Invisibility :
+                    Invisibility(skillConstruct.duration);
+                    break;
+                case CharacterData.ConstructName.RemoveEnemyBlocks :
+                case CharacterData.ConstructName.RemoveSelfBlocks :
+
+                case CharacterData.ConstructName.SelfBuffMultiplier :
+                    SelfBuffMultiplier(skillConstruct.amount, skillConstruct.duration);
+                    break;
+                case CharacterData.ConstructName.SelfBuffPercentace :
+                case CharacterData.ConstructName.SelfDebuffMultiplier :
+                case CharacterData.ConstructName.SelfDebuffPercentage :
+                case CharacterData.ConstructName.SkillBuff :
+                    SkillBuff(skillConstruct.amount, skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.SpellBind :
                     SpellBind(skillConstruct.amount, skillConstruct.duration);
@@ -182,12 +217,17 @@ public class Skills : MonoBehaviour {
                 case CharacterData.ConstructName.SpellBindAll :
                     SpellBindAll(skillConstruct.duration);
                     break;
-                case CharacterData.ConstructName.SelfBuffMultiplier :
-                    SelfBuffMultiplier(skillConstruct.amount, skillConstruct.duration);
+                
+                case CharacterData.ConstructName.StealHold :
+                case CharacterData.ConstructName.StopClearing :
+                    StopClearing(skillConstruct.duration);
                     break;
                 case CharacterData.ConstructName.StopRegularAttack :
                     StopRegularAttack(skillConstruct.duration);
                     break;
+                case CharacterData.ConstructName.StopTime :
+                case CharacterData.ConstructName.TrapBlocks :
+                case CharacterData.ConstructName.Weaken :
                 default: 
                     break;
             }
@@ -207,6 +247,10 @@ public class Skills : MonoBehaviour {
     }
 
     private void ChangeAllColorPercentage(CharacterData.Color color, float amount, int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.ChangeAllColorPercentage, skillTag = skillTagCount, buffTag = buffTagCount, buffAmount = amount, duration = duration } );
+    }
+
+    private void ChangeBlockColor(){
 
     }
 
@@ -218,12 +262,40 @@ public class Skills : MonoBehaviour {
         AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.ChangeAllColorPercentage, skillTag = skillTagCount, buffTag = buffTagCount, buffAmount = changePercentage, color = color, duration = duration } );
     }
 
+    private void DamageChanging(int amount, CharacterData.DependentValues dependentValues){
+        int finalDamage = 0;
+
+        // Needs work
+
+        if (dependentValues == CharacterData.DependentValues.BlocksRemoved){
+            finalDamage = blockRemoveCount * amount;
+        }
+
+        Damage?.Invoke(this, new DamageEventArgs { amount = finalDamage } );
+    }
+
     private void DamageFixed(int amount){
         Damage?.Invoke(this, new DamageEventArgs { amount = amount } );
     }
 
+    private void HealChangeing(int amount, CharacterData.DependentValues dependentValues){
+        int finalHeal = 0;
+
+        // Needs work
+
+        Heal?.Invoke(this, new HealEventArgs { amount = finalHeal } );
+    }
+
     private void HealFixed(int amount){
         Heal?.Invoke(this, new HealEventArgs { amount = amount } );
+    }
+
+    private void Invisibility(int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.Invisibility, skillTag = skillTagCount, buffTag = buffTagCount, duration = duration } );
+    }
+
+    private void SkillBuff(int amount, int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.SkillBuff, skillTag  = skillTagCount, buffTag = buffTagCount, buffAmount = amount, duration = duration } );
     }
 
     private void SpellBind(int amountOfSpells, int duration){
@@ -233,6 +305,10 @@ public class Skills : MonoBehaviour {
 
     private void SpellBindAll(int duration){
         AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.SpellBindAll, skillTag = skillTagCount, buffTag = buffTagCount, duration = duration } );
+    }
+
+    private void StopClearing(int duration){
+        AddBuffs?.Invoke(this, new AddBuffsEventArgs { id = CharacterData.BuffName.StopClearing, duration = duration } );
     }
 
     private void SelfBuffMultiplier(int buffMultiplier, int duration){

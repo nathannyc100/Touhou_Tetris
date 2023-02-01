@@ -3,7 +3,13 @@ using UnityEngine.Tilemaps;
 using System;
 
 public class Board : MonoBehaviour {
-    
+
+    [SerializeField]
+    private Buffs buffs;
+    [SerializeField]
+    public Controls controls;
+    private GameManager gameManager;
+
     public Tilemap tilemap;
     public NetworkManager networkManager;
     public Skills skills;
@@ -37,7 +43,7 @@ public class Board : MonoBehaviour {
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
 
-    public Controls controls;
+    
 
 
     public RectInt Bounds {
@@ -50,16 +56,20 @@ public class Board : MonoBehaviour {
     private void Awake() {
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
+        this.gameManager = Data.GetGameManager();
 
         this.controls = new Controls();
 
         for (int i = 0; i < this.tetrominos.Length; i ++){
             this.tetrominos[i].Initialize();
         }
+
+        this.character = gameManager.character;
     }
 
     private void OnEnable(){
         controls.Enable();
+        buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 
     private void OnDisable(){
@@ -250,6 +260,10 @@ public class Board : MonoBehaviour {
     }
 
     public void ClearLines(){
+        if (buffs.totalBuffs.StopClearing){
+            return;
+        }
+
         RectInt bounds = this.Bounds;
         int row = bounds.yMin;
 
@@ -341,6 +355,14 @@ public class Board : MonoBehaviour {
 
             row ++;
         }
+    }
+
+    private void When_BuffDisappeared_LineClear(object sender, Buffs.BuffDisappearedEventArgs e){
+        if (e.id != CharacterData.BuffName.StopClearing){
+            return;
+        }
+
+        ClearLines();
     }
 
 }
