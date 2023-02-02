@@ -6,8 +6,6 @@ public class Board : MonoBehaviour {
 
     [SerializeField]
     private Buffs buffs;
-    [SerializeField]
-    public Controls controls;
     private GameManager gameManager;
 
     public Tilemap tilemap;
@@ -34,6 +32,8 @@ public class Board : MonoBehaviour {
     public int randomInt = 6;
     private int temp;
 
+    public Controls controls;
+
     public event EventHandler<LineClearedEventArgs> LineCleared;
     public event EventHandler ResetGame;
     
@@ -58,8 +58,6 @@ public class Board : MonoBehaviour {
         this.activePiece = GetComponentInChildren<Piece>();
         this.gameManager = Data.GetGameManager();
 
-        this.controls = new Controls();
-
         for (int i = 0; i < this.tetrominos.Length; i ++){
             this.tetrominos[i].Initialize();
         }
@@ -68,12 +66,7 @@ public class Board : MonoBehaviour {
     }
 
     private void OnEnable(){
-        controls.Enable();
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
-    }
-
-    private void OnDisable(){
-        controls.Disable();
     }
 
     public void Start(){

@@ -10,7 +10,7 @@ public class Skills : MonoBehaviour {
     [SerializeField]
     private Buffs buffs;
     [SerializeField]
-    private Piece piece;
+    private ControlsManager controlsManager;
     [SerializeField]
     private Timing timing;
 
@@ -71,7 +71,7 @@ public class Skills : MonoBehaviour {
     }
 
     private void OnEnable(){
-        piece.OnSkillPressed += When_OnSkillPressed;
+        controlsManager.OnSkillPressed += When_OnSkillPressed;
         board.ResetGame += When_ResetGame_InitializeSkills;
         timing.TimeIncrement += When_TimeIncrement;
     }
@@ -100,7 +100,7 @@ public class Skills : MonoBehaviour {
         }
     }
 
-    private void When_OnSkillPressed(object sender, Piece.OnSkillPressedEventArgs e){
+    private void When_OnSkillPressed(object sender, ControlsManager.OnSkillPressedEventArgs e){
         int character = board.character;
         int manaCost = CharacterData.skillData[character, (int)e.id].manaCost;
 

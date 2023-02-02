@@ -28,24 +28,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
             ""id"": ""97c0e09b-a68d-46da-a9a9-597c0a4d9c1e"",
             ""actions"": [
                 {
-                    ""name"": ""Left"",
-                    ""type"": ""Button"",
-                    ""id"": ""238e0e35-2bf4-44cf-a8ea-b4cf4de83e7a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Right"",
-                    ""type"": ""Button"",
-                    ""id"": ""19289b4a-e9c2-4160-976b-3793ead1f417"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""SoftDrop"",
                     ""type"": ""Button"",
                     ""id"": ""1347f6c6-a3c3-432f-82f4-6d6761eff5c9"",
@@ -152,31 +134,18 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HorizontalMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""49033d8a-b0fb-4c61-b0be-e2cebf802eb0"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""65f0020b-aad7-4411-a3f4-1210c8a3370f"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d85739b2-c636-49af-ae94-1524f3f20cbc"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Right"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""28d4e761-2e90-49eb-b627-9a52413832ae"",
@@ -352,16 +321,59 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Skill5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""cc749cd1-da60-4e4b-a1dc-03d5884236d3"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""8efd9ae0-c6c6-4ccd-bce7-d971127cbe03"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""f48e66f1-ce4e-474c-9668-3e3c62bdfc09"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""New control scheme"",
+            ""bindingGroup"": ""New control scheme"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
         // Keyboard
         m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
-        m_Keyboard_Left = m_Keyboard.FindAction("Left", throwIfNotFound: true);
-        m_Keyboard_Right = m_Keyboard.FindAction("Right", throwIfNotFound: true);
         m_Keyboard_SoftDrop = m_Keyboard.FindAction("SoftDrop", throwIfNotFound: true);
         m_Keyboard_HardDrop = m_Keyboard.FindAction("HardDrop", throwIfNotFound: true);
         m_Keyboard_RotateLeft = m_Keyboard.FindAction("RotateLeft", throwIfNotFound: true);
@@ -374,6 +386,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Keyboard_Skill4 = m_Keyboard.FindAction("Skill4", throwIfNotFound: true);
         m_Keyboard_Skill5 = m_Keyboard.FindAction("Skill5", throwIfNotFound: true);
         m_Keyboard_SkillFinal = m_Keyboard.FindAction("SkillFinal", throwIfNotFound: true);
+        m_Keyboard_HorizontalMovement = m_Keyboard.FindAction("HorizontalMovement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -433,8 +446,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     // Keyboard
     private readonly InputActionMap m_Keyboard;
     private IKeyboardActions m_KeyboardActionsCallbackInterface;
-    private readonly InputAction m_Keyboard_Left;
-    private readonly InputAction m_Keyboard_Right;
     private readonly InputAction m_Keyboard_SoftDrop;
     private readonly InputAction m_Keyboard_HardDrop;
     private readonly InputAction m_Keyboard_RotateLeft;
@@ -447,12 +458,11 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Keyboard_Skill4;
     private readonly InputAction m_Keyboard_Skill5;
     private readonly InputAction m_Keyboard_SkillFinal;
+    private readonly InputAction m_Keyboard_HorizontalMovement;
     public struct KeyboardActions
     {
         private @Controls m_Wrapper;
         public KeyboardActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Left => m_Wrapper.m_Keyboard_Left;
-        public InputAction @Right => m_Wrapper.m_Keyboard_Right;
         public InputAction @SoftDrop => m_Wrapper.m_Keyboard_SoftDrop;
         public InputAction @HardDrop => m_Wrapper.m_Keyboard_HardDrop;
         public InputAction @RotateLeft => m_Wrapper.m_Keyboard_RotateLeft;
@@ -465,6 +475,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Skill4 => m_Wrapper.m_Keyboard_Skill4;
         public InputAction @Skill5 => m_Wrapper.m_Keyboard_Skill5;
         public InputAction @SkillFinal => m_Wrapper.m_Keyboard_SkillFinal;
+        public InputAction @HorizontalMovement => m_Wrapper.m_Keyboard_HorizontalMovement;
         public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -474,12 +485,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_KeyboardActionsCallbackInterface != null)
             {
-                @Left.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnLeft;
-                @Left.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnLeft;
-                @Left.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnLeft;
-                @Right.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRight;
-                @Right.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRight;
-                @Right.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRight;
                 @SoftDrop.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSoftDrop;
                 @SoftDrop.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSoftDrop;
                 @SoftDrop.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSoftDrop;
@@ -516,16 +521,13 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @SkillFinal.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSkillFinal;
                 @SkillFinal.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSkillFinal;
                 @SkillFinal.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSkillFinal;
+                @HorizontalMovement.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
+                @HorizontalMovement.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
+                @HorizontalMovement.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
             }
             m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Left.started += instance.OnLeft;
-                @Left.performed += instance.OnLeft;
-                @Left.canceled += instance.OnLeft;
-                @Right.started += instance.OnRight;
-                @Right.performed += instance.OnRight;
-                @Right.canceled += instance.OnRight;
                 @SoftDrop.started += instance.OnSoftDrop;
                 @SoftDrop.performed += instance.OnSoftDrop;
                 @SoftDrop.canceled += instance.OnSoftDrop;
@@ -562,14 +564,24 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @SkillFinal.started += instance.OnSkillFinal;
                 @SkillFinal.performed += instance.OnSkillFinal;
                 @SkillFinal.canceled += instance.OnSkillFinal;
+                @HorizontalMovement.started += instance.OnHorizontalMovement;
+                @HorizontalMovement.performed += instance.OnHorizontalMovement;
+                @HorizontalMovement.canceled += instance.OnHorizontalMovement;
             }
         }
     }
     public KeyboardActions @Keyboard => new KeyboardActions(this);
+    private int m_NewcontrolschemeSchemeIndex = -1;
+    public InputControlScheme NewcontrolschemeScheme
+    {
+        get
+        {
+            if (m_NewcontrolschemeSchemeIndex == -1) m_NewcontrolschemeSchemeIndex = asset.FindControlSchemeIndex("New control scheme");
+            return asset.controlSchemes[m_NewcontrolschemeSchemeIndex];
+        }
+    }
     public interface IKeyboardActions
     {
-        void OnLeft(InputAction.CallbackContext context);
-        void OnRight(InputAction.CallbackContext context);
         void OnSoftDrop(InputAction.CallbackContext context);
         void OnHardDrop(InputAction.CallbackContext context);
         void OnRotateLeft(InputAction.CallbackContext context);
@@ -582,5 +594,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnSkill4(InputAction.CallbackContext context);
         void OnSkill5(InputAction.CallbackContext context);
         void OnSkillFinal(InputAction.CallbackContext context);
+        void OnHorizontalMovement(InputAction.CallbackContext context);
     }
 }
