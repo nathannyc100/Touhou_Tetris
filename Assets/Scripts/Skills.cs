@@ -101,6 +101,9 @@ public class Skills : MonoBehaviour {
     }
 
     private void When_OnSkillPressed(object sender, ControlsManager.OnSkillPressedEventArgs e){
+        if (GameManager.gameIsPaused){
+            return;
+        }
         int character = board.character;
         int manaCost = CharacterData.skillData[character, (int)e.id].manaCost;
 

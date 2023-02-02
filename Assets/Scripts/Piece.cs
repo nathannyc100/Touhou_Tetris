@@ -162,6 +162,10 @@ public class Piece : MonoBehaviour {
     }
 
     private void When_OnKeyPressed(object sender, ControlsManager.OnKeyPressedEventArgs e){
+        if (GameManager.gameIsPaused){
+            return;
+        }
+        
         this.board.Clear(this);
         
 
