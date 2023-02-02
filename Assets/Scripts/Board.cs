@@ -4,14 +4,14 @@ using System;
 
 public class Board : MonoBehaviour {
 
-    [SerializeField]
     private Buffs buffs;
     private GameManager gameManager;
+    private Skills skills;
+    private Piece activePiece;
 
     public Tilemap tilemap;
-    public NetworkManager networkManager;
-    public Skills skills;
-    public Piece activePiece;
+    
+    
     public Vector3Int[] holdPiece;
     public TileBase[] tileColor;
     public TetrominoData[] tetrominos;
@@ -58,6 +58,8 @@ public class Board : MonoBehaviour {
         this.activePiece = GetComponentInChildren<Piece>();
         this.gameManager = Data.GetGameManager();
 
+        
+
         for (int i = 0; i < this.tetrominos.Length; i ++){
             this.tetrominos[i].Initialize();
         }
@@ -66,6 +68,11 @@ public class Board : MonoBehaviour {
     }
 
     private void OnEnable(){
+        this.buffs = DependencyManager.instance.buffs;
+        this.gameManager = GameManager.instance;
+        this.skills = DependencyManager.instance.skills;
+        this.activePiece = DependencyManager.instance.piece;
+        
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 

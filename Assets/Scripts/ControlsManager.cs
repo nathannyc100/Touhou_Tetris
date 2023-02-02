@@ -55,39 +55,6 @@ public class ControlsManager : MonoBehaviour,
     
     // Recieving callbacks to sending events
 
-    // public void OnLeft(InputAction.CallbackContext context){
-    //     switch (context.phase){
-    //         case InputActionPhase.Started :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.LeftPressed } );
-    //             break;
-    //         case InputActionPhase.Performed :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.LeftHeld } );
-    //             break;
-    //         case InputActionPhase.Canceled :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.LeftCancelled } );
-    //             break;
-    //         default :
-    //             break;
-    //     }
-        
-    // }
-
-    // public void OnRight(InputAction.CallbackContext context){
-    //     switch (context.phase){
-    //         case InputActionPhase.Started :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.RightPressed } );
-    //             break;
-    //         case InputActionPhase.Performed :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.RightHeld } );
-    //             break;
-    //         case InputActionPhase.Canceled :
-    //             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.RightCancelled } );
-    //             break;
-    //         default :
-    //             break;
-    //     }
-    // }
-
     public void OnSoftDrop(InputAction.CallbackContext context){
         if (context.phase == InputActionPhase.Performed){
             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SoftDropPressed } );

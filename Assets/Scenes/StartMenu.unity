@@ -3018,3 +3018,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b58be185831b4cdca983e79ea125e88, type: 3}
+--- !u!1 &3563113347375774357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3563113347322380422, guid: 1b58be185831b4cdca983e79ea125e88, type: 3}
+  m_PrefabInstance: {fileID: 3563113347375774356}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3563113347375774358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3563113347375774357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20378fa491ae1470ebe2b09c00b67d6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 0}
+  buffs: {fileID: 0}
+  characterController: {fileID: 0}
+  controlsManager: {fileID: 0}
+  damagePopup: {fileID: 0}
+  gameAssets: {fileID: 0}
+  ghost: {fileID: 0}
+  health: {fileID: 0}
+  mainMenu: {fileID: 0}
+  mana: {fileID: 0}
+  optionsMenu: {fileID: 0}
+  pauseMenu: {fileID: 0}
+  piece: {fileID: 0}
+  skills: {fileID: 0}
+  text: {fileID: 0}
+  timing: {fileID: 0}
+  visuals: {fileID: 0}
