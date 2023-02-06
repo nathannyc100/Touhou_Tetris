@@ -176,10 +176,7 @@ public class Piece : MonoBehaviour {
     }
 
     private void When_OnKeyPressed(object sender, ControlsManager.OnKeyPressedEventArgs e){
-        if (GameManager.gameIsPaused || GameManager.GameCurrentState == GameManager.GameState.CountdownScreen){
-            return;
-        }
-
+        
         this.board.Clear(this);
         
 
