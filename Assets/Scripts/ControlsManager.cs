@@ -8,6 +8,10 @@ public class ControlsManager : MonoBehaviour,
     Controls.IKeyboardActions
 {
     public Controls controls;
+    private Piece piece;
+
+    private InputAction RightAction;
+    private InputAction LeftAction;
 
     public event EventHandler<OnKeyPressedEventArgs> OnKeyPressed;
     public event EventHandler<OnSkillPressedEventArgs> OnSkillPressed;
@@ -39,6 +43,8 @@ public class ControlsManager : MonoBehaviour,
 
     private void OnEnable(){
         controls.Keyboard.Enable();
+        this.piece = DependencyManager.instance.piece;
+        
     }
 
     private void OnDisable(){

@@ -5,11 +5,10 @@ using System;
 
 public class Piece : MonoBehaviour {
 
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private ControlsManager controlsManager;
-    public Ghost ghost;
+    private Ghost ghost;
+
     public TetrominoData data;
     public Vector3Int[] cells;
     public Vector3Int position;
@@ -19,6 +18,7 @@ public class Piece : MonoBehaviour {
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
+
     public float moveDelay = 0.3f;
     public float moveSpeed = 0.1f;
 
@@ -28,8 +28,7 @@ public class Piece : MonoBehaviour {
     private bool continuousLeft;
     private bool continuousRight;
 
-    public void Initialize(Board board, Vector3Int position, TetrominoData data){
-        this.board = board;
+    public void Initialize(Vector3Int position, TetrominoData data){
         this.position = position;
         this.data = data;
         this.rotationIndex = 0;
@@ -45,8 +44,13 @@ public class Piece : MonoBehaviour {
         }
     }
 
-    void Awake() {
+    private void OnEnable(){
+        this.board = DependencyManager.instance.board;
+        this.controlsManager = DependencyManager.instance.controlsManager;
+        this.ghost = DependencyManager.instance.ghost;
+
         controlsManager.OnKeyPressed += When_OnKeyPressed;
+
     }
 
     private void Update(){
@@ -68,7 +72,18 @@ public class Piece : MonoBehaviour {
             }
         }
 
-        // Piece falling speed mechanism 
+        Fall();
+
+        this.board.Set(this);
+    }
+
+
+    // Piece falling mechanism 
+    private void Fall(){
+        if (GameManager.GameCurrentState == GameManager.GameState.CountdownScreen){
+            return;
+        }
+        
         if (softToggle == false){
             if (Time.time - this.previousTime > stepDelay){
                 Step();
@@ -79,7 +94,6 @@ public class Piece : MonoBehaviour {
             }
         }
 
-        this.board.Set(this);
     }
 
     
@@ -162,10 +176,10 @@ public class Piece : MonoBehaviour {
     }
 
     private void When_OnKeyPressed(object sender, ControlsManager.OnKeyPressedEventArgs e){
-        if (GameManager.gameIsPaused){
+        if (GameManager.gameIsPaused || GameManager.GameCurrentState == GameManager.GameState.CountdownScreen){
             return;
         }
-        
+
         this.board.Clear(this);
         
 
