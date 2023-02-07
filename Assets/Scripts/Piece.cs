@@ -89,6 +89,11 @@ public class Piece : MonoBehaviour {
     }
 
     private void Step(){
+        // Stop stepping when not in Tetris mode
+        if (GameManager.GameCurrentState != GameManager.GameState.Tetris){
+            return;
+        }
+
         this.previousTime = Time.time;
 
         Move(Vector2Int.down);
@@ -161,8 +166,9 @@ public class Piece : MonoBehaviour {
         return false;
     }
 
+    // Keypress manager
     private void When_OnKeyPressed(object sender, ControlsManager.OnKeyPressedEventArgs e){
-        if (GameManager.gameIsPaused){
+        if (GameManager.gameIsPaused || GameManager.GameCurrentState != GameManager.GameState.Tetris){
             return;
         }
         
