@@ -72,7 +72,7 @@ public class Board : MonoBehaviour {
         this.gameManager = GameManager.instance;
         this.skills = DependencyManager.instance.skills;
         this.activePiece = DependencyManager.instance.piece;
-        
+
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 
@@ -80,7 +80,6 @@ public class Board : MonoBehaviour {
         ResetGame?.Invoke(this, EventArgs.Empty);
 
         SpawnPiece();
-
     }
 
     public void CopyArray(int[] targetArray, int[] destinationArray, int arrayLen){
@@ -123,7 +122,7 @@ public class Board : MonoBehaviour {
         TetrominoData data = this.tetrominos[this.activePieceData.type];
         this.activePieceData.color = UnityEngine.Random.Range(0, 5);
         this.activePieceData.orient = 0;
-        this.activePiece.Initialize(this, this.spawnPosition, data);
+        this.activePiece.Initialize(this.spawnPosition, data);
 
         if (IsValidPosition(this.activePiece, this.spawnPosition, 0)){
             Set(this.activePiece);
@@ -142,7 +141,7 @@ public class Board : MonoBehaviour {
             holdData[i] = Data.originalOrient[holdPieceData.type * 4, i];
         }
 
-        this.activePiece.Initialize(this, this.spawnPosition, data);
+        this.activePiece.Initialize(this.spawnPosition, data);
         
         for (int i = 0; i < 4; i ++){
             this.holdPiece[i] = (Vector3Int)holdData[i];
