@@ -21,6 +21,7 @@ public class Health : MonoBehaviour
     public event EventHandler<DamageDeltEventArgs> DamageDelt;
     public event EventHandler<HealthChangedEventArgs> HealthChanged;
     public event EventHandler RegularAttackStopped;
+    public event EventHandler GameOverEvent;
 
     public class DamageDeltEventArgs : EventArgs {
         public int damage;
@@ -73,6 +74,10 @@ public class Health : MonoBehaviour
         health -= damage;
         AddDamageToSendLineDamage(damage);
         HealthChanged?.Invoke(this, new HealthChangedEventArgs { health = this.health } );
+
+        if (health <= 0){
+            GameOverEvent?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void When_ResetGame_InitializeValues(object sender, EventArgs e){

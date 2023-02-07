@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     private CountdownScreen countdownScreen;
     private GameOverScreen gameOverScreen;
     private Board board;
+    private Health health;
 
     public static GameState GameCurrentState;
     [System.NonSerialized]
@@ -146,9 +147,12 @@ public class GameManager : MonoBehaviour
                 this.countdownScreen = DependencyManager.instance.countdownScreen;
                 this.gameOverScreen = DependencyManager.instance.gameOverScreen;
                 this.board = DependencyManager.instance.board;
+                this.health = DependencyManager.instance.health;
 
                 countdownScreen.CountdownFinished += When_CountdownFinished;
                 board.GameOverEvent += When_GameOverEvent;
+                health.GameOverEvent += When_GameOverEvent;
+                
                 break;
 
             default :

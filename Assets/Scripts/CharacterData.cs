@@ -127,7 +127,7 @@ public static class CharacterData
     }
     
     public static readonly Dictionary<int, Character> Characters = new Dictionary<int, Character>(){
-        { 0, new Character { name = "Test Character", health = 50000, attack = 1f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
+        { 0, new Character { name = "Test Character", health = 50000, attack = 1000f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
         { 1, new Character { name = "博麗靈夢", health = 50000, attack = 5.0f, multiplier = new float[]{ 2.0f, 1.0f, 1.0f, 1.0f, 0.75f } } },
         { 2, new Character { name = "霧雨魔理沙", health = 46000, attack = 5.4f, multiplier = new float[]{ 1.0f, 0.5f, 0.5f, 3.5f, 0.5f } } },
         { 3, new Character { name = "帕秋莉  諾蕾姬", health = 35000, attack = 5.8f, multiplier = new float[]{ 2.0f, 2.0f, 2.0f, 2.0f, 2.0f } } },
@@ -154,7 +154,7 @@ public static class CharacterData
 
     public static readonly SkillData[,] skillData = new SkillData[,]{
         {
-            new SkillData {},
+            new SkillData { manaCost = 10, skillName = "Auto Kill", construct = new SkillConstruct[] { new SkillConstruct { id = ConstructName.DamageFixed, amount = 10000 } } },
             new SkillData {},
             new SkillData {},
             new SkillData {},

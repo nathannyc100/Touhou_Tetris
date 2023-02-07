@@ -13,6 +13,7 @@ public class GameOverScreen : MonoBehaviour
     [SerializeField]
     private Button quitButton;
     private Board board;
+    private Health health;
 
     public event EventHandler RestartGameEvent;
     public event EventHandler QuitGameEvent;
@@ -25,7 +26,9 @@ public class GameOverScreen : MonoBehaviour
 
     private void OnEnable(){
         this.board = DependencyManager.instance.board;
+        this.health = DependencyManager.instance.health;
         board.GameOverEvent += When_GameOverEvent;
+        health.GameOverEvent += When_GameOverEvent;
     }
 
     private void When_GameOverEvent(object sender, EventArgs e){
