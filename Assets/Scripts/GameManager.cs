@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
 
     private ControlsManager controlsManager;
     private PauseMenu pauseMenu;
-    private CountdownManager countdownManager;
 
     public static GameState GameCurrentState;
     [System.NonSerialized]
@@ -32,7 +31,6 @@ public class GameManager : MonoBehaviour
 
     public enum GameState {
         StartMenu,
-        CountdownScreen,
         Tetris,
     }
 
@@ -67,16 +65,12 @@ public class GameManager : MonoBehaviour
 
     private void When_StartGame(object sender, EventArgs e){
         if (GameCurrentState == GameState.StartMenu){
-            GameCurrentState = GameState.CountdownScreen;
+            GameCurrentState = GameState.Tetris;
             SceneManager.LoadScene("Tetris");
 
             
             
         }
-    }
-
-    private void When_StartGameStartBoard(object sender, EventArgs e){
-        GameCurrentState = GameState.Tetris;
     }
 
     private void When_SceneLoaded(Scene previousScene, Scene currentScene){
@@ -121,13 +115,6 @@ public class GameManager : MonoBehaviour
     private void When_DependencyChanged(object sender, EventArgs e){
         this.controlsManager = DependencyManager.instance.controlsManager;
         this.pauseMenu = DependencyManager.instance.pauseMenu;
-
-        if (GameCurrentState == GameState.CountdownScreen){
-            this.controlsManager = DependencyManager.instance.controlsManager;
-            this.countdownManager = DependencyManager.instance.countdownManager;
-
-            countdownManager.StartGame += When_StartGameStartBoard;
-        }
 
     }
 
