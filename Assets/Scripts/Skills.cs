@@ -13,6 +13,7 @@ public class Skills : MonoBehaviour {
     private ControlsManager controlsManager;
     [SerializeField]
     private Timing timing;
+    private GameManager gameManager;
 
     public int[] skillCD;
     private int buffTagCount;
@@ -71,8 +72,9 @@ public class Skills : MonoBehaviour {
     }
 
     private void OnEnable(){
+        this.gameManager = GameManager.instance;
         controlsManager.OnSkillPressed += When_OnSkillPressed;
-        board.ResetGame += When_ResetGame_InitializeSkills;
+        gameManager.ResetGame += When_ResetGame_InitializeSkills;
         timing.TimeIncrement += When_TimeIncrement;
     }
 

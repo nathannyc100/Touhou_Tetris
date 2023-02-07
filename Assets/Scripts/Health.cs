@@ -11,6 +11,7 @@ public class Health : MonoBehaviour
     private Buffs buffs;
     [SerializeField]
     private Skills skills;
+    private GameManager gameManager;
 
     public int health;
     private int damage;
@@ -30,8 +31,10 @@ public class Health : MonoBehaviour
     }
 
     private void OnEnable(){
+        this.gameManager = GameManager.instance;
+
         board.LineCleared += When_LineCleared_DamageCalc;
-        board.ResetGame += When_ResetGame_InitializeValues;
+        gameManager.ResetGame += When_ResetGame_InitializeValues;
         skills.Heal += When_Heal;
     }
 

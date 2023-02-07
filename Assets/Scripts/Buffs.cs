@@ -43,6 +43,7 @@ public class Buffs : MonoBehaviour
     private Skills skills;
     [SerializeField]
     private Timing timing;
+    private GameManager gameManager;
 
     private List<CharacterBuffs> characterBuffs;
     public TotalBuffs totalBuffs;
@@ -54,8 +55,10 @@ public class Buffs : MonoBehaviour
         public CharacterData.BuffName id;
     }
 
-    private void Awake(){
-        board.ResetGame += When_ResetGame_InitializeBuffs;
+    private void OnEnable(){
+        this.gameManager = GameManager.instance;
+
+        gameManager.ResetGame += When_ResetGame_InitializeBuffs;
         skills.AddBuffs += When_AddBuffs;
         timing.TimeIncrement += When_TimeIncrement;
     }

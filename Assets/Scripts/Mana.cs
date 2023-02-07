@@ -15,6 +15,7 @@ public class Mana : MonoBehaviour
     private Timing timing;
     [SerializeField]
     private Skills skills;
+    private GameManager gameManager;
 
     public int manaCount;
     private bool infiniteMana = true;       //used for testing, custom games
@@ -26,8 +27,9 @@ public class Mana : MonoBehaviour
     }
 
     private void OnEnable(){
+        this.gameManager = GameManager.instance;
         board.LineCleared += When_LineCleared_IncrementMana;
-        board.ResetGame += When_ResetGame_InitializeMana;
+        gameManager.ResetGame += When_ResetGame_InitializeMana;
         skills.DecreaseMana += When_DecreaseMana;
     }
 

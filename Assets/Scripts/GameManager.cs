@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
 
     private ControlsManager controlsManager;
     private PauseMenu pauseMenu;
-    private CountdownManager countdownManager;
+    private CountdownScreen countdownScreen;
+    private GameOverScreen gameOverScreen;
+    private Board board;
 
     public static GameState GameCurrentState;
     [System.NonSerialized]
@@ -29,11 +31,13 @@ public class GameManager : MonoBehaviour
     public GameType gameType = GameType.Singleplayer;
 
     public event EventHandler ChangePauseMenuState;
+    public event EventHandler ResetGame;
 
     public enum GameState {
         StartMenu,
         CountdownScreen,
         Tetris,
+        GameOver,
     }
 
     public enum GameType {
@@ -103,6 +107,20 @@ public class GameManager : MonoBehaviour
 
     private void When_CountdownFinished(object sender, EventArgs e){
         GameCurrentState = GameState.Tetris;
+        countdownScreen.CountdownFinished -= When_CountdownFinished;
+    }
+
+    private void When_GameOverEvent(object sender, EventArgs e){
+        GameCurrentState = GameState.GameOver;
+    }
+
+    private void When_RestartGameEvent(object sender, EventArgs e){
+        GameCurrentState = GameState.CountdownScreen;
+        countdownScreen.CountdownFinished += When_CountdownFinished;
+    }
+
+    private void When_QuitGameEvent(object sender, EventArgs e){
+
     }
 
     private void PauseGame(){
@@ -125,13 +143,23 @@ public class GameManager : MonoBehaviour
             case GameState.CountdownScreen:
                 this.controlsManager = DependencyManager.instance.controlsManager;
                 this.pauseMenu = DependencyManager.instance.pauseMenu;
-                this.countdownManager = DependencyManager.instance.countdownManager;
+                this.countdownScreen = DependencyManager.instance.countdownScreen;
+                this.gameOverScreen = DependencyManager.instance.gameOverScreen;
+                this.board = DependencyManager.instance.board;
 
-                countdownManager.CountdownFinished += When_CountdownFinished;
+                countdownScreen.CountdownFinished += When_CountdownFinished;
+                board.GameOverEvent += When_GameOverEvent;
                 break;
 
             default :
                 break;
+        }
+
+    }
+
+    public void RunOnFirstFrame(){
+        if (GameCurrentState == GameState.CountdownScreen){
+            ResetGame?.Invoke(this, EventArgs.Empty);
         }
 
     }

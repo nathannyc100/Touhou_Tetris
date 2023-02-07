@@ -13,9 +13,10 @@ public class DependencyManager : MonoBehaviour
     public Buffs buffs;
     public CharacterController characterController;
     public ControlsManager controlsManager;
-    public CountdownManager countdownManager;
+    public CountdownScreen countdownScreen;
     public DamagePopup damagePopup;
     public GameAssets gameAssets;
+    public GameOverScreen gameOverScreen;
     public Ghost ghost;
     public Health health;
     public MainMenu mainMenu;
@@ -49,9 +50,10 @@ public class DependencyManager : MonoBehaviour
         this.buffs = FindObjectOfType<Buffs>();
         this.characterController = FindObjectOfType<CharacterController>();
         this.controlsManager = FindObjectOfType<ControlsManager>();
-        this.countdownManager = FindObjectOfType<CountdownManager>();
+        this.countdownScreen = FindObjectOfType<CountdownScreen>();
         this.damagePopup = FindObjectOfType<DamagePopup>();
         this.gameAssets = FindObjectOfType<GameAssets>();
+        this.gameOverScreen = FindObjectOfType<GameOverScreen>();
         this.ghost = FindObjectOfType<Ghost>();
         this.health = FindObjectOfType<Health>();
         this.mainMenu = FindObjectOfType<MainMenu>();

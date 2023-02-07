@@ -9,6 +9,8 @@ public class Piece : MonoBehaviour {
     private Board board;
     [SerializeField]
     private ControlsManager controlsManager;
+    private GameManager gameManager;
+
     public Ghost ghost;
     public TetrominoData data;
     public Vector3Int[] cells;
@@ -45,8 +47,12 @@ public class Piece : MonoBehaviour {
         }
     }
 
-    void Awake() {
+    private void Awake() {
         controlsManager.OnKeyPressed += When_OnKeyPressed;
+    }
+
+    private void OnEnable(){
+        this.gameManager = GameManager.instance;
     }
 
     private void Update(){

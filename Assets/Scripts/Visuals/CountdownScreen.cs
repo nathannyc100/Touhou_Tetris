@@ -4,13 +4,14 @@ using UnityEngine;
 using System;
 using TMPro;
 
-public class CountdownManager : MonoBehaviour
+public class CountdownScreen : MonoBehaviour
 {
     
     [SerializeField]
     private GameObject countdownScreen;
     [SerializeField]
     private TextMeshProUGUI countdownText;
+    private GameManager gameManager;
 
     private int timer;
     private float lastTime;
@@ -18,9 +19,10 @@ public class CountdownManager : MonoBehaviour
     public event EventHandler CountdownFinished;
 
     private void OnEnable(){
-        timer = 3;
-        lastTime = Time.time;
-        countdownText.text = timer.ToString();
+        this.gameManager = GameManager.instance;
+
+        gameManager.ResetGame += When_ResetGame;
+
     }
 
     void Update(){
@@ -34,5 +36,12 @@ public class CountdownManager : MonoBehaviour
             CountdownFinished?.Invoke(this, EventArgs.Empty);
             countdownScreen.SetActive(false);
         }
+    }
+
+    private void When_ResetGame(object sender, EventArgs e){
+        countdownScreen.SetActive(true);
+        timer = 3;
+        lastTime = Time.time;
+        countdownText.text = timer.ToString();
     }
 }

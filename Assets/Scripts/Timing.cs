@@ -21,7 +21,7 @@ public class Timing : MonoBehaviour
     private bool gameIsRunning = false;
 
     private void OnEnable(){
-        board.ResetGame += When_ResetGame_StartTiming;
+        GameManager.instance.ResetGame += When_ResetGame_StartTiming;
     }
 
     private void Update(){

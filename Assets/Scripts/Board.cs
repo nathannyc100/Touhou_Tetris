@@ -35,7 +35,8 @@ public class Board : MonoBehaviour {
     public Controls controls;
 
     public event EventHandler<LineClearedEventArgs> LineCleared;
-    public event EventHandler ResetGame;
+    public event EventHandler GameOverEvent;
+    
     
     public class LineClearedEventArgs : EventArgs {
         public int[] colorArray;
@@ -73,11 +74,11 @@ public class Board : MonoBehaviour {
         this.skills = DependencyManager.instance.skills;
         this.activePiece = DependencyManager.instance.piece;
         
+        gameManager.ResetGame += When_ResetGame;
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 
     public void Start(){
-        ResetGame?.Invoke(this, EventArgs.Empty);
 
         SpawnPiece();
 
@@ -173,9 +174,14 @@ public class Board : MonoBehaviour {
     
 
     private void GameOver(){
-        ResetGame?.Invoke(this, EventArgs.Empty);
+        GameOverEvent?.Invoke(this, EventArgs.Empty);
+        
+    }
+
+    private void When_ResetGame(object sender, EventArgs e){
         this.tilemap.ClearAllTiles();
         holdStart = true;
+        SpawnPiece();
     }
 
     public void Set(Piece piece){
