@@ -5,15 +5,10 @@ using System;
 
 public class Mana : MonoBehaviour
 {
-    [SerializeField]
     private Piece piece;
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private Buffs buffs;
-    [SerializeField]
     private Timing timing;
-    [SerializeField]
     private Skills skills;
     private GameManager gameManager;
 
@@ -26,11 +21,25 @@ public class Mana : MonoBehaviour
         public int mana;
     }
 
-    private void OnEnable(){
+    private void Awake(){
+        this.piece = FindObjectOfType<Piece>();
+        this.board = FindObjectOfType<Board>();
+        this.buffs = GetComponent<Buffs>();
+        this.timing = GetComponent<Timing>();
+        this.skills = GetComponent<Skills>();
         this.gameManager = GameManager.instance;
+    }
+
+    private void OnEnable(){
         board.LineCleared += When_LineCleared_IncrementMana;
         gameManager.ResetGame += When_ResetGame_InitializeMana;
         skills.DecreaseMana += When_DecreaseMana;
+    }
+
+    private void OnDisable(){
+        board.LineCleared -= When_LineCleared_IncrementMana;
+        gameManager.ResetGame -= When_ResetGame_InitializeMana;
+        skills.DecreaseMana -= When_DecreaseMana;
     }
 
     private void When_LineCleared_IncrementMana(object sender, EventArgs e){

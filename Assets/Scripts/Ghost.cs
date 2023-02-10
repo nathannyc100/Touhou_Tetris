@@ -4,9 +4,7 @@ using UnityEngine.Tilemaps;
 public class Ghost : MonoBehaviour {
     public Tile tile;
 
-    [SerializeField]
     public Board board;
-    [SerializeField]
     public Piece trackingPiece;
 
     public Tilemap tilemap;
@@ -15,6 +13,8 @@ public class Ghost : MonoBehaviour {
 
     private void Awake(){
         this.tilemap = GetComponentInChildren<Tilemap>();
+        this.board = FindObjectOfType<Board>();
+        this.trackingPiece = FindObjectOfType<Piece>();
         this.cells = new Vector3Int[4];
     }
 

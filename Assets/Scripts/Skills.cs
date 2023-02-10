@@ -3,15 +3,10 @@ using System;
 
 public class Skills : MonoBehaviour {
 
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private Mana mana;
-    [SerializeField]
     private Buffs buffs;
-    [SerializeField]
     private ControlsManager controlsManager;
-    [SerializeField]
     private Timing timing;
     private GameManager gameManager;
 
@@ -71,11 +66,25 @@ public class Skills : MonoBehaviour {
         public CharacterData.SkillName id;
     }
 
-    private void OnEnable(){
+    private void Awake(){
+        this.board = FindObjectOfType<Board>();
+        this.mana = GetComponent<Mana>();
+        this.buffs = GetComponent<Buffs>();
+        this.controlsManager = FindObjectOfType<ControlsManager>();
+        this.timing = GetComponent<Timing>();
         this.gameManager = GameManager.instance;
+    }
+
+    private void OnEnable(){
         controlsManager.OnSkillPressed += When_OnSkillPressed;
         gameManager.ResetGame += When_ResetGame_InitializeSkills;
         timing.TimeIncrement += When_TimeIncrement;
+    }
+
+    private void OnDisable(){
+        controlsManager.OnSkillPressed -= When_OnSkillPressed;
+        gameManager.ResetGame -= When_ResetGame_InitializeSkills;
+        timing.TimeIncrement -= When_TimeIncrement;
     }
 
     private void When_ResetGame_InitializeSkills(object sender, EventArgs e){

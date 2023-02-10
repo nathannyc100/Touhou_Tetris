@@ -5,8 +5,8 @@ using System;
 
 public class Timing : MonoBehaviour
 {
-    [SerializeField]
     private Board board;
+    private GameManager gameManager;
 
     public event EventHandler<TimeIncrementEventArgs> TimeIncrement;
 
@@ -20,8 +20,17 @@ public class Timing : MonoBehaviour
     public float increment = 1f;
     private bool gameIsRunning = false;
 
+    private void Awake(){
+        this.board = FindObjectOfType<Board>();
+        this.gameManager = GameManager.instance;
+    }
+
     private void OnEnable(){
-        GameManager.instance.ResetGame += When_ResetGame_StartTiming;
+        gameManager.ResetGame += When_ResetGame_StartTiming;
+    }
+
+    private void OnDisable(){
+        gameManager.ResetGame -= When_ResetGame_StartTiming;
     }
 
     private void Update(){

@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    
-    private ControlsManager controlsManager;
     private GameManager gameManager;
 
     // Ui GameObject
@@ -22,15 +20,23 @@ public class PauseMenu : MonoBehaviour
     [SerializeField]
     private Button restartButton;
 
-    public event EventHandler OnResumeGame;
+    public event EventHandler ResumeGameEvent;
+    public event EventHandler BackToStartMenu;
+    public event EventHandler RestartGameEvent;
 
     private void Awake(){
         resumeButton.onClick.AddListener(() => { ResumeGame(); } );
+        exitButton.onClick.AddListener(() => { ExitGame(); });
+        restartButton.onClick.AddListener(() => { RestartGame(); });
+        gameManager = GameManager.instance;
     }
 
-    private void Start(){
-        gameManager = GameManager.instance;
+    private void OnEnable(){
         gameManager.ChangePauseMenuState += When_ChangePauseMenuState;
+    }
+
+    private void OnDisable(){
+        gameManager.ChangePauseMenuState -= When_ChangePauseMenuState;
     }
 
     private void When_ChangePauseMenuState(object sender, EventArgs e){
@@ -42,7 +48,16 @@ public class PauseMenu : MonoBehaviour
     }
 
     private void ResumeGame(){
-        OnResumeGame?.Invoke(this, EventArgs.Empty);
+        ResumeGameEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ExitGame(){
+        BackToStartMenu?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void RestartGame(){
+        pauseMenuUI.SetActive(false);
+        RestartGameEvent?.Invoke(this, EventArgs.Empty);
     }
 
 }

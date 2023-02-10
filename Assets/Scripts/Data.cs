@@ -14,14 +14,6 @@ public static class Data
         public int orient;
     }
 
-    public static GameManager GetGameManager(){
-        GameObject gameManager = GameObject.Find("GameManager");
-        return gameManager.GetComponent<GameManager>();
-    }
-
-    
-
-
 
     public static readonly Dictionary<Tetromino, Vector2Int[]> Cells = new Dictionary<Tetromino, Vector2Int[]>()
     {

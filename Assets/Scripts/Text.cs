@@ -5,11 +5,8 @@ using System;
 
 public class Text : MonoBehaviour
 {
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private Health health;
-    [SerializeField]
     private Mana mana;
 
     [SerializeField]
@@ -22,10 +19,20 @@ public class Text : MonoBehaviour
 
     public int num = 0;
 
+    private void Awake(){
+        this.board = FindObjectOfType<Board>();
+        this.health = FindObjectOfType<Health>();
+        this.mana = FindObjectOfType<Mana>();
+    }
+
     private void OnEnable(){
         health.HealthChanged += When_HealthChanged;
-        mana.ManaChanged += When_ManaChanged;
-        
+        mana.ManaChanged += When_ManaChanged; 
+    }
+
+    private void OnDisable(){
+        health.HealthChanged -= When_HealthChanged;
+        mana.ManaChanged -= When_ManaChanged; 
     }
 
     private void Start(){

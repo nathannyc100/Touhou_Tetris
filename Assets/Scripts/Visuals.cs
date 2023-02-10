@@ -5,14 +5,17 @@ using System;
 
 public class Visuals : MonoBehaviour
 {
-    [SerializeField]
     private Skills skills;
-    [SerializeField]
     private Health health;
-    [SerializeField]
     private Mana mana;
-    [SerializeField]
     private Buffs buffs;
+
+    private void Awake(){
+        this.skills = GetComponent<Skills>();
+        this.health = GetComponent<Health>();
+        this.mana = GetComponent<Mana>();
+        this.buffs = GetComponent<Buffs>();
+    }
 
     private void OnEnable(){
         skills.SkillTriggered += When_SkillTriggered;
@@ -26,8 +29,19 @@ public class Visuals : MonoBehaviour
         health.RegularAttackStopped += When_RegularAttackStopped;
     }
 
-    private void Start(){
+    private void OnDisable(){
+        skills.SkillTriggered -= When_SkillTriggered;
+        skills.NotEnoughMana -= When_NotEnoughMana;
+        skills.FinalSkillStillLocked -= When_FinalSkillStillLocked;
+        skills.SpellBinded -= When_SkillBinded;
+        skills.FinalSkillAlreadyUsed -= When_FinalSkillAlreadyused;
+        // skills.SkillIsAlreadyOn -= When_SkillIsAlreadyOn;
+        buffs.BuffDisappeared -= When_BuffDisappeared;
+        health.DamageDelt -= When_DamageDelt;
+        health.RegularAttackStopped -= When_RegularAttackStopped;
     }
+
+    
     
     private void When_SkillTriggered(object sender, Skills.SkillTriggeredEventArgs e){
         Debug.Log(e.id);

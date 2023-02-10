@@ -5,13 +5,12 @@ using System;
 
 public class Piece : MonoBehaviour {
 
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private ControlsManager controlsManager;
+    private Ghost ghost;
     private GameManager gameManager;
 
-    public Ghost ghost;
+    
     public TetrominoData data;
     public Vector3Int[] cells;
     public Vector3Int position;
@@ -48,11 +47,20 @@ public class Piece : MonoBehaviour {
     }
 
     private void Awake() {
-        controlsManager.OnKeyPressed += When_OnKeyPressed;
+        this.board = GetComponent<Board>();
+        this.controlsManager = GetComponent<ControlsManager>();
+        this.ghost = FindObjectOfType<Ghost>();
+        this.gameManager = GameManager.instance;
+
+        
     }
 
     private void OnEnable(){
-        this.gameManager = GameManager.instance;
+        controlsManager.OnKeyPressed += When_OnKeyPressed;
+    }
+
+    private void OnDisable(){
+        controlsManager.OnKeyPressed -= When_OnKeyPressed;
     }
 
     private void Update(){

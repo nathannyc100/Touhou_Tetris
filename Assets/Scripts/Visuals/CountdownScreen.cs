@@ -18,11 +18,16 @@ public class CountdownScreen : MonoBehaviour
 
     public event EventHandler CountdownFinished;
 
-    private void OnEnable(){
+    private void Awake(){
         this.gameManager = GameManager.instance;
+    }
 
+    private void OnEnable(){
         gameManager.ResetGame += When_ResetGame;
+    }
 
+    private void OnDisable(){
+        gameManager.ResetGame -= When_ResetGame;
     }
 
     void Update(){

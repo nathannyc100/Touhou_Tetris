@@ -56,8 +56,10 @@ public class Board : MonoBehaviour {
 
     private void Awake() {
         this.tilemap = GetComponentInChildren<Tilemap>();
-        this.activePiece = GetComponentInChildren<Piece>();
-        this.gameManager = Data.GetGameManager();
+        this.activePiece = GetComponent<Piece>();
+        this.buffs = FindObjectOfType<Buffs>();
+        this.skills = FindObjectOfType<Skills>();
+        this.gameManager = GameManager.instance;
 
         
 
@@ -69,19 +71,13 @@ public class Board : MonoBehaviour {
     }
 
     private void OnEnable(){
-        this.buffs = DependencyManager.instance.buffs;
-        this.gameManager = GameManager.instance;
-        this.skills = DependencyManager.instance.skills;
-        this.activePiece = DependencyManager.instance.piece;
-        
         gameManager.ResetGame += When_ResetGame;
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 
-    public void Start(){
-
-        SpawnPiece();
-
+    private void OnDisable(){
+        gameManager.ResetGame -= When_ResetGame;
+        buffs.BuffDisappeared -= When_BuffDisappeared_LineClear;
     }
 
     public void CopyArray(int[] targetArray, int[] destinationArray, int arrayLen){

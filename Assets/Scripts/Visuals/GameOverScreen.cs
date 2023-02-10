@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameOverScreen : MonoBehaviour
 {
     [SerializeField]
-    private GameObject countdownScreen;
+    private GameObject gameOverScreen;
     [SerializeField]
     private Button restartButton;
     [SerializeField]
@@ -16,31 +16,38 @@ public class GameOverScreen : MonoBehaviour
     private Health health;
 
     public event EventHandler RestartGameEvent;
-    public event EventHandler QuitGameEvent;
+    public event EventHandler BackToStartMenu;
 
 
     private void Awake(){
         restartButton.onClick.AddListener(() => { RestartGame(); });
         quitButton.onClick.AddListener(() => { QuitGame(); });
+
+        this.board = FindObjectOfType<Board>();
+        this.health = FindObjectOfType<Health>();
     }
 
     private void OnEnable(){
-        this.board = DependencyManager.instance.board;
-        this.health = DependencyManager.instance.health;
         board.GameOverEvent += When_GameOverEvent;
         health.GameOverEvent += When_GameOverEvent;
     }
 
+    private void OnDisable(){
+        board.GameOverEvent -= When_GameOverEvent;
+        health.GameOverEvent -= When_GameOverEvent;
+    }
+
     private void When_GameOverEvent(object sender, EventArgs e){
-        countdownScreen.SetActive(true);
+        gameOverScreen.SetActive(true); 
     }
 
     private void RestartGame(){
         RestartGameEvent?.Invoke(this, EventArgs.Empty);
+        gameOverScreen.SetActive(false);
     }
 
     private void QuitGame(){
-        QuitGameEvent?.Invoke(this, EventArgs.Empty);
+        BackToStartMenu?.Invoke(this, EventArgs.Empty);
     }
 }
 

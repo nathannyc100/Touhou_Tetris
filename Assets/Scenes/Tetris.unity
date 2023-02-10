@@ -169,7 +169,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &36233088
 MonoBehaviour:
@@ -338,63 +338,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152901313}
   m_CullTransparentMesh: 1
---- !u!1001 &190513100
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1898005539437370256, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_Name
-      value: DependencyReloader
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 992.63916
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -52.149506
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -9.800524
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181560926019596838, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: bba6f24f099a24f95b5683fc16271aa3, type: 3}
 --- !u!1 &234135801
 GameObject:
   m_ObjectHideFlags: 0
@@ -711,7 +654,7 @@ RectTransform:
   - {fileID: 234135802}
   - {fileID: 487524878}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -730,9 +673,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb5d9929078c4d059e78af67a3b83b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 1556646930}
-  health: {fileID: 985738459}
-  mana: {fileID: 985738458}
   characterName: {fileID: 914958369}
   healthText: {fileID: 1537599881}
   manaText: {fileID: 415659438}
@@ -787,7 +727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d87998e303b4a4995c523acb401e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownScreen: {fileID: 487524877}
+  gameOverScreen: {fileID: 487524877}
   restartButton: {fileID: 2093326412}
   quitButton: {fileID: 896122608}
 --- !u!1 &391577868
@@ -1478,7 +1418,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &561024070
 GameObject:
@@ -1562,7 +1502,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &660289017
 GameObject:
@@ -2070,10 +2010,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cbb6087a07cb4d02a43831c172cbeb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skills: {fileID: 985738457}
-  health: {fileID: 985738459}
-  mana: {fileID: 985738458}
-  buffs: {fileID: 985738460}
 --- !u!114 &985738456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2119,11 +2055,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2442e6bffc874864981f681821bf4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piece: {fileID: 1556646933}
-  board: {fileID: 1556646930}
-  buffs: {fileID: 985738460}
-  timing: {fileID: 985738456}
-  skills: {fileID: 985738457}
   manaCount: 0
 --- !u!114 &985738459
 MonoBehaviour:
@@ -2137,9 +2068,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f23b22ce48e5494d91e0f394c03aa07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 1556646930}
-  buffs: {fileID: 985738460}
-  skills: {fileID: 985738457}
   health: 0
 --- !u!114 &985738460
 MonoBehaviour:
@@ -2169,7 +2097,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &985738462
 MonoBehaviour:
@@ -2350,7 +2278,7 @@ Transform:
   m_Children:
   - {fileID: 1795366747}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1312073833
 MonoBehaviour:
@@ -2462,7 +2390,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1537599879
 GameObject:
@@ -2709,7 +2637,7 @@ Transform:
   m_Children:
   - {fileID: 1966560983}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1556646933
 MonoBehaviour:
@@ -2723,9 +2651,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b5c6efa42a448a08ba06425d8c26dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 1556646930}
-  controlsManager: {fileID: 1556646935}
-  ghost: {fileID: 1312073833}
   data:
     tetromino: 0
     tile: {fileID: 0}

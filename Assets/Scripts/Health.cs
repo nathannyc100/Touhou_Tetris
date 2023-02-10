@@ -5,11 +5,8 @@ using System;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField]
     private Board board;
-    [SerializeField]
     private Buffs buffs;
-    [SerializeField]
     private Skills skills;
     private GameManager gameManager;
 
@@ -31,12 +28,23 @@ public class Health : MonoBehaviour
         public int health;
     }
 
-    private void OnEnable(){
+    private void Awake(){
+        this.board = FindObjectOfType<Board>();
+        this.buffs = GetComponent<Buffs>();
+        this.skills = GetComponent<Skills>();
         this.gameManager = GameManager.instance;
+    }
 
+    private void OnEnable(){
         board.LineCleared += When_LineCleared_DamageCalc;
         gameManager.ResetGame += When_ResetGame_InitializeValues;
         skills.Heal += When_Heal;
+    }
+
+    private void OnDisable(){
+        board.LineCleared -= When_LineCleared_DamageCalc;
+        gameManager.ResetGame -= When_ResetGame_InitializeValues;
+        skills.Heal -= When_Heal;
     }
 
     private void LateUpdate(){
