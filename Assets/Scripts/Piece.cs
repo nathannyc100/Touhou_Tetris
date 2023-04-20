@@ -213,6 +213,7 @@ public class Piece : MonoBehaviour {
                 softToggle = false;
                 break;
             case ControlsManager.ActionName.HardDrop :
+                Debug.Log("Call hard drop");
                 HardDrop();
                 break;
             case ControlsManager.ActionName.RotateLeft :

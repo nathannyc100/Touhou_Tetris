@@ -9,6 +9,7 @@ public class Health : MonoBehaviour
     private Buffs buffs;
     private Skills skills;
     private GameManager gameManager;
+    private NetworkManagerScript networkManagerScript;
 
     public int health;
     private int damage;
@@ -82,6 +83,9 @@ public class Health : MonoBehaviour
         health -= damage;
         AddDamageToSendLineDamage(damage);
         HealthChanged?.Invoke(this, new HealthChangedEventArgs { health = this.health } );
+
+        // there is a problem with this line of code. It prevents hard drop from working correctly
+        //networkManagerScript.ChangePlayerHealthServerRPC(networkManagerScript.clientID, health);
 
         if (health <= 0){
             GameOverEvent?.Invoke(this, EventArgs.Empty);

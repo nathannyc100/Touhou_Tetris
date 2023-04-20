@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     private Board board;
     private Health health;
 
+    private string GameCurrentScene;
     public static GameState GameCurrentState;
     [System.NonSerialized]
     public int character;
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
     public string text;
 
     public static bool gameIsPaused;
-    public GameType gameType = GameType.Singleplayer;
+    public static GameType GameCurrentMode;
 
     public event EventHandler ChangePauseMenuState;
     public event EventHandler ResetGame;
@@ -44,11 +45,11 @@ public class GameManager : MonoBehaviour
         Multiplayer,
     }
 
-    
-
     private void Awake(){
         MakeSingleton();
         GameCurrentState = GameState.StartMenu;
+        GameCurrentMode = GameType.Singleplayer;
+
         this.mainMenu = FindObjectOfType<MainMenu>();
         this.optionsMenu = FindObjectOfType<OptionsMenu>();
     }
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
         SceneManager.activeSceneChanged += When_SceneLoaded;
         mainMenu.StartGame += When_StartGame;
         optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
+        optionsMenu.ChangeModeEvent += When_ChangeModeEvent;
     }
 
     private void OnDisable(){
@@ -117,8 +119,12 @@ public class GameManager : MonoBehaviour
         this.character = e.id;
     }
 
+    private void When_ChangeModeEvent(object sender, OptionsMenu.ChangeModeEventEventArgs e){
+        GameCurrentMode = e.id;
+    }
+
     private void When_OnPausePressed(object sender, EventArgs e){
-        if (gameType == GameType.Multiplayer){
+        if (GameCurrentMode == GameType.Multiplayer){
             return;
         }
 
