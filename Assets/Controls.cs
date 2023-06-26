@@ -141,7 +141,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""id"": ""49033d8a-b0fb-4c61-b0be-e2cebf802eb0"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": ""Hold(duration=0.1)"",
                     ""initialStateCheck"": true
                 }
             ],

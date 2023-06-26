@@ -129,6 +129,8 @@ public class Board : MonoBehaviour {
         }
 
         Set(this.activePiece);
+
+        Debug.Log("Spawned piece");
     }
 
     
