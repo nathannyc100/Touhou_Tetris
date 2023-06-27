@@ -40,8 +40,8 @@ public class Text : MonoBehaviour
     }
 
     private void OnEnable(){
-        health.HealthChanged += When_HealthChanged;
-        mana.ManaChanged += When_ManaChanged; 
+        //health.HealthChanged += When_HealthChanged;
+        //mana.ManaChanged += When_ManaChanged; 
 
         switch (GameManager.GameCurrentMode){
             case GameManager.GameType.Singleplayer :
@@ -58,8 +58,8 @@ public class Text : MonoBehaviour
     }
 
     private void OnDisable(){
-        health.HealthChanged -= When_HealthChanged;
-        mana.ManaChanged -= When_ManaChanged; 
+        //health.HealthChanged -= When_HealthChanged;
+        //mana.ManaChanged -= When_ManaChanged; 
     }
 
     private void Start(){
@@ -67,34 +67,34 @@ public class Text : MonoBehaviour
     }
 
     private void EnableMultiplayer(){
-        networkManagerScript.EnemyCharacterChanged += When_EnemyCharacterChanged;
-        networkManagerScript.EnemyHealthChanged += When_EnemyHealthChanged;
-        networkManagerScript.EnemyManaChanged += When_EnemyManaChanged;
-        networkManagerScript.EnemyHoldChanged += When_EnemyHoldChanged;
+        // networkManagerScript.EnemyCharacterChanged += When_EnemyCharacterChanged;
+        // networkManagerScript.EnemyHealthChanged += When_EnemyHealthChanged;
+        // networkManagerScript.EnemyManaChanged += When_EnemyManaChanged;
+        // networkManagerScript.EnemyHoldChanged += When_EnemyHoldChanged;
     }
 
-    private void When_HealthChanged(object sender, Health.HealthChangedEventArgs e){
-        healthText.text = e.health.ToString();
-    }
+    // private void When_HealthChanged(object sender, Health.HealthChangedEventArgs e){
+    //     healthText.text = e.health.ToString();
+    // }
 
-    private void When_ManaChanged(object sender, Mana.ManaChangedEventArgs e){
-        manaText.text = e.mana.ToString();
-    }
+    // private void When_ManaChanged(object sender, Mana.ManaChangedEventArgs e){
+    //     manaText.text = e.mana.ToString();
+    // }
 
-    private void When_EnemyCharacterChanged(object sender, NetworkManagerScript.EnemyCharacterChangedEventArgs e){
-        enemyCharacter.text = CharacterData.Characters[e.id].name;
-    }
+    // private void When_EnemyCharacterChanged(object sender, NetworkManagerScript.EnemyCharacterChangedEventArgs e){
+    //     enemyCharacter.text = CharacterData.Characters[e.id].name;
+    // }
 
-    private void When_EnemyHealthChanged(object sender, NetworkManagerScript.EnemyHealthChangedEventArgs e){
-        enemyHealth.text = e.health.ToString();
-    }
+    // private void When_EnemyHealthChanged(object sender, NetworkManagerScript.EnemyHealthChangedEventArgs e){
+    //     enemyHealth.text = e.health.ToString();
+    // }
 
-    private void When_EnemyManaChanged(object sender, NetworkManagerScript.EnemyManaChangedEventArgs e){
-        enemyMana.text = e.mana.ToString();
-    }
+    // private void When_EnemyManaChanged(object sender, NetworkManagerScript.EnemyManaChangedEventArgs e){
+    //     enemyMana.text = e.mana.ToString();
+    // }
 
-    private void When_EnemyHoldChanged(object sender, NetworkManagerScript.EnemyHoldChangedEventArgs e){
+    // private void When_EnemyHoldChanged(object sender, NetworkManagerScript.EnemyHoldChangedEventArgs e){
 
-    }
+    // }
 
 }
