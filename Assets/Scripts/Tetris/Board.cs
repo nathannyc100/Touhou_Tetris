@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
+using System.Collections.Generic;
+
 
 public class Board : MonoBehaviour {
 
@@ -31,15 +33,21 @@ public class Board : MonoBehaviour {
     public int[] tempTypeArray = new int[7] {0, 1, 2, 3, 4, 5, 6};
     public int randomInt = 6;
     private int temp;
+    private int[] syncBoard = new int[200];
 
     public Controls controls;
 
     public event EventHandler<LineClearedEventArgs> LineCleared;
     public event EventHandler GameOverEvent;
+    public event EventHandler<UpdateSyncBoardEventArgs> UpdateSyncBoardEvent;
     
     
     public class LineClearedEventArgs : EventArgs {
         public int[] colorArray;
+    }
+
+    public class UpdateSyncBoardEventArgs : EventArgs {
+        public int[] syncBoard;
     }
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
@@ -47,7 +55,7 @@ public class Board : MonoBehaviour {
     
 
 
-    public RectInt Bounds {
+    private RectInt Bounds {
         get {
             Vector2Int position = new Vector2Int(-this.boardSize.x / 2, -this.boardSize.y / 2);
             return new RectInt(position, this.boardSize);
@@ -155,6 +163,7 @@ public class Board : MonoBehaviour {
         }
 
         Set(this.activePiece);
+        
     }
     
 
@@ -367,6 +376,25 @@ public class Board : MonoBehaviour {
         }
 
         ClearLines();
+    }
+
+    public void UpdateSyncBoard(){
+        RectInt bounds = this.Bounds;
+        
+        for (int i = 0; i < 10; i ++){
+            for (int j = 0; j < 20; j ++){
+                Vector3Int position = new Vector3Int(bounds.xMin + i, bounds.yMin + j, 0);
+                string name;
+                TileBase tileName;
+
+                tileName = tilemap.GetTile(position);
+                name = tileName.ToString();
+
+                syncBoard[j * 10 + i] = ColorIndex(name);
+            }
+        }
+
+        UpdateSyncBoardEvent?.Invoke(this, new UpdateSyncBoardEventArgs { syncBoard = this.syncBoard } );
     }
 
 }

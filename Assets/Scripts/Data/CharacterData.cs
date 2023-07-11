@@ -86,6 +86,8 @@ public static class CharacterData
         Green,
         Yellow,
         Purple,
+        Ghost,
+        Empty,
     }
 
     public enum Keypress {

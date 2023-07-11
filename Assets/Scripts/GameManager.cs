@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     public event EventHandler ChangePauseMenuState;
     public event EventHandler ResetGame;
+    public event EventHandler InitializeNetworkScript;
 
     public enum GameState {
         StartMenu,
@@ -90,6 +91,8 @@ public class GameManager : MonoBehaviour
 
         switch (sceneName){
             case "Tetris" :
+                InitializeNetworkScript?.Invoke(this, EventArgs.Empty);
+
                 controlsManager.OnPausePressed += When_OnPausePressed;
                 pauseMenu.ResumeGameEvent += When_OnPausePressed;
                 countdownScreen.CountdownFinished += When_CountdownFinished;

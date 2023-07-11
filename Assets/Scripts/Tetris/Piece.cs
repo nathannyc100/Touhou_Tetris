@@ -44,6 +44,8 @@ public class Piece : MonoBehaviour {
         for (int i = 0; i < data.cells.Length; i ++){
             this.cells[i] = (Vector3Int)data.cells[i];
         }
+
+        this.board.UpdateSyncBoard();
     }
 
     private void Awake() {
@@ -144,6 +146,7 @@ public class Piece : MonoBehaviour {
             this.lockTime = 0f;
         }
 
+        this.board.UpdateSyncBoard();
         return valid;
     }
 
@@ -161,6 +164,8 @@ public class Piece : MonoBehaviour {
             board.activePieceData.orient = finalOrient;
 
         }
+
+        this.board.UpdateSyncBoard();
     }
 
     private bool TestSRS(int finalOrient){
