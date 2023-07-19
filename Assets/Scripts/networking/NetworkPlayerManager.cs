@@ -4,12 +4,14 @@ using UnityEngine;
 using Unity.Netcode;
 using System;   
 
-public class NetworkManagerScript : NetworkBehaviour
+public class NetworkPlayerManager : NetworkBehaviour
 {
     
     private BoardSyncManager boardSyncManager;
     private Board board;
     private GameManager gameManager;
+    [SerializeField]
+    private GameObject networkGameManager;
     
     public NetworkList<ushort> syncBoard = new NetworkList<ushort>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -22,8 +24,14 @@ public class NetworkManagerScript : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        DontDestroyOnLoad(this.gameObject);
         gameManager = FindObjectOfType<GameManager>();
         gameManager.InitializeNetworkScript += When_InitializeNetworkScript;
+
+        if (IsHost && IsOwner){
+            networkGameManager = Instantiate(networkGameManager, Vector3.zero, Quaternion.identity);
+            networkGameManager.GetComponent<NetworkObject>().Spawn();
+        }
 
         base.OnNetworkSpawn();
     }

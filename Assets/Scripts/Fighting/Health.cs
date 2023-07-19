@@ -9,7 +9,6 @@ public class Health : MonoBehaviour
     private Buffs buffs;
     private Skills skills;
     private GameManager gameManager;
-    private NetworkManagerScript networkManagerScript;
 
     public int health;
     private int damage;

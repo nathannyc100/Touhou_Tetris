@@ -9,7 +9,7 @@ public class Text : MonoBehaviour
     private Health health;
     private Mana mana;
     private GameManager gameManager;
-    private NetworkManagerScript networkManagerScript;
+    private NetworkPlayerManager networkPlayerManager;
 
     [SerializeField]
     private TextMeshProUGUI characterName;
@@ -35,7 +35,6 @@ public class Text : MonoBehaviour
         this.board = FindObjectOfType<Board>();
         this.health = FindObjectOfType<Health>();
         this.mana = FindObjectOfType<Mana>();
-        this.networkManagerScript = FindObjectOfType<NetworkManagerScript>();
         this.gameManager = GameManager.instance;
     }
 

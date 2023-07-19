@@ -15,6 +15,7 @@ public class CountdownScreen : MonoBehaviour
 
     private int timer;
     private float lastTime;
+    private bool startCountdown;
     
 
     public event EventHandler CountdownFinished;
@@ -32,6 +33,10 @@ public class CountdownScreen : MonoBehaviour
     }
 
     void Update(){
+        if (GameManager.GameCurrentMode == GameManager.GameType.Multiplayer){
+            
+        }
+
         if (Time.time > lastTime + 1f){
             timer --;
             lastTime = Time.time;
