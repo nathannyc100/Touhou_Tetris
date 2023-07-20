@@ -380,14 +380,21 @@ public class Board : MonoBehaviour {
 
     public void UpdateSyncBoard(){
         RectInt bounds = this.Bounds;
+        int i;
+        int j;
         
-        for (int i = 0; i < 10; i ++){
-            for (int j = 0; j < 20; j ++){
+        for (i = 0; i < 10; i ++){
+            for (j = 0; j < 20; j ++){
                 Vector3Int position = new Vector3Int(bounds.xMin + i, bounds.yMin + j, 0);
                 string name;
                 TileBase tileName;
 
                 tileName = tilemap.GetTile(position);
+
+                if (tileName == null) {
+                    syncBoard[j * 10 + i] = 0;
+                    continue;
+                }
                 name = tileName.ToString();
 
                 syncBoard[j * 10 + i] = ColorIndex(name);
