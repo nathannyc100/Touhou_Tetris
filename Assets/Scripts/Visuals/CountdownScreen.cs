@@ -22,6 +22,13 @@ public class CountdownScreen : MonoBehaviour
 
     private void Awake(){
         this.gameManager = GameManager.instance;
+        if (GameManager.GameCurrentMode == GameManager.GameType.Multiplayer){
+            gameManager.MultiplayerStartCountdown += When_MultiplayerStartCountdown;
+            startCountdown = false;
+            countdownText.text = "Waiting for other players";
+        } else {
+            startCountdown = true;
+        }
     }
 
     private void OnEnable(){
@@ -33,11 +40,8 @@ public class CountdownScreen : MonoBehaviour
     }
 
     void Update(){
-        if (GameManager.GameCurrentMode == GameManager.GameType.Multiplayer){
-            
-        }
-
-        if (Time.time > lastTime + 1f){
+        
+        if (Time.time > lastTime + 1f && startCountdown == true){
             timer --;
             lastTime = Time.time;
             countdownText.text = timer.ToString();
@@ -50,6 +54,17 @@ public class CountdownScreen : MonoBehaviour
     }
 
     private void When_ResetGame(object sender, EventArgs e){
+        if (GameManager.GameCurrentMode == GameManager.GameType.Singleplayer){
+            ResetGame();
+        }
+    }
+
+    private void When_MultiplayerStartCountdown(object sender, EventArgs e){
+        startCountdown = true;
+        ResetGame();
+    }
+
+    private void ResetGame(){
         countdownScreen.SetActive(true);
         timer = 3;
         lastTime = Time.time;

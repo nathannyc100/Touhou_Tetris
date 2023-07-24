@@ -13,7 +13,9 @@ public class NetworkPlayerManager : NetworkBehaviour
     private Mana mana;
     private GameManager gameManager;
     [SerializeField]
+    private GameObject networkGameManagerPrefab;
     private GameObject networkGameManager;
+    private int syncBoardLength = 200;
 
     public NetworkList<ushort> syncBoard = new NetworkList<ushort>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<ushort> syncHealth = new NetworkVariable<ushort>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -22,6 +24,7 @@ public class NetworkPlayerManager : NetworkBehaviour
 
     public event EventHandler<SyncBoardEventArgs> SyncBoard;
     public event EventHandler<SyncPlayerEventArgs> SyncPlayer;
+    public event EventHandler RefreshDontDestroyOnLoad;
 
     public class SyncBoardEventArgs : EventArgs {
         public List<ushort> boardList;
@@ -40,9 +43,21 @@ public class NetworkPlayerManager : NetworkBehaviour
 
         //syncBoard = new NetworkList<ushort>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-        if (IsHost && IsOwner){
-            networkGameManager = Instantiate(networkGameManager, Vector3.zero, Quaternion.identity);
-            networkGameManager.GetComponent<NetworkObject>().Spawn();
+        if (IsServer){
+            NetworkGameManager testFirstManager = FindObjectOfType<NetworkGameManager>();
+
+            if (testFirstManager != null){
+                networkGameManager = testFirstManager.gameObject;
+                //DontDestroyOnLoad(networkGameManager);
+                return;
+            }
+
+            networkGameManager = Instantiate(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
+            //DontDestroyOnLoad(networkGameManager);
+            networkGameManager.GetComponent<NetworkObject>().Spawn(false);
+            
+
+            Debug.Log("network game manager instantiated");
         }
 
         base.OnNetworkSpawn();
@@ -57,6 +72,8 @@ public class NetworkPlayerManager : NetworkBehaviour
             boardSyncManager = FindObjectOfType<BoardSyncManager>();
             boardSyncManager.GetNetworkReference(this);
             syncBoard.OnListChanged += UpdateBoard;
+            syncHealth.OnValueChanged += UpdatePlayerHealth;
+            
 
         }
 
@@ -87,12 +104,17 @@ public class NetworkPlayerManager : NetworkBehaviour
         SyncBoard?.Invoke(this, new SyncBoardEventArgs { boardList = copyList } );
     }
 
-    private void UpdatePlayer(NetworkListEvent<ushort> changeEvent){
-       // SyncPlayer?.Invoke(this, new SyncPlayerEventArgs { health = change})
+    private void UpdatePlayerHealth(ushort previous, ushort current){
+        SyncPlayer?.Invoke(this, new SyncPlayerEventArgs { health = current });
+    }
+
+    private void UpdatePlayerMana(ushort previous, ushort current){
+        SyncPlayer?.Invoke(this, new SyncPlayerEventArgs { mana = current });
     }
 
     private void When_UpdateSyncBoardEvent(object sender, Board.UpdateSyncBoardEventArgs e){
-        foreach (int i in e.syncBoard){
+        int i;
+        for (i = 0; i < syncBoardLength; i ++){
             syncBoard[i] = (ushort)e.syncBoard[i];
         }
     }

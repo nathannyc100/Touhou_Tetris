@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     private Board board;
     private Health health;
 
+    // Networking
+    private NetworkGameManager networkGameManager;
+
     private string GameCurrentScene;
     public static GameState GameCurrentState;
     [System.NonSerialized]
@@ -33,6 +36,7 @@ public class GameManager : MonoBehaviour
     public event EventHandler ChangePauseMenuState;
     public event EventHandler ResetGame;
     public event EventHandler InitializeNetworkScript;
+    public event EventHandler MultiplayerStartCountdown;
 
     public enum GameState {
         StartMenu,
@@ -49,7 +53,7 @@ public class GameManager : MonoBehaviour
     private void Awake(){
         MakeSingleton();
         GameCurrentState = GameState.StartMenu;
-        GameCurrentMode = GameType.Singleplayer;
+        GameCurrentMode = GameType.Multiplayer;
 
         this.mainMenu = FindObjectOfType<MainMenu>();
         this.optionsMenu = FindObjectOfType<OptionsMenu>();
@@ -224,6 +228,16 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene(sceneName);
 
+    }
+
+    public void GetNetworkReference(NetworkGameManager script){
+        networkGameManager = script;
+
+        networkGameManager.MultiplayerStartCountdown += When_MultiplayerStartCountdown;
+    }
+
+    private void When_MultiplayerStartCountdown(object sender, EventArgs e){
+        MultiplayerStartCountdown?.Invoke(this, EventArgs.Empty);
     }
 
 }

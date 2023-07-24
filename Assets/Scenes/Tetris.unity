@@ -2558,6 +2558,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76da55f3881024f8c871e8798bdc8faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileColor:
+  - {fileID: 11400000, guid: 5d427e8acadb84a278de190e579a325b, type: 2}
+  - {fileID: 11400000, guid: 711e8361051104b2ab041fdb979713ff, type: 2}
+  - {fileID: 11400000, guid: e776f0ebb88a54c89b5091d5894db017, type: 2}
+  - {fileID: 11400000, guid: 2a221827236724556a36820188b88bb3, type: 2}
+  - {fileID: 11400000, guid: e73e6876eba1f4d81b584cad1b8b2e3d, type: 2}
 --- !u!1 &1119844933
 GameObject:
   m_ObjectHideFlags: 0

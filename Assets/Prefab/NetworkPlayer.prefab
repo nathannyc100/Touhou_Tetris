@@ -45,7 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c98615bf6034a72a736b575dd226d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkGameManager: {fileID: 6740137986130435833, guid: 645a6726f4a5e481bb09705ab5d5f5e6, type: 3}
+  networkGameManagerPrefab: {fileID: 6740137986130435833, guid: 645a6726f4a5e481bb09705ab5d5f5e6, type: 3}
+  syncHealth:
+    m_InternalValue: 0
+  syncMana:
+    m_InternalValue: 0
 --- !u!114 &6127179234193355049
 MonoBehaviour:
   m_ObjectHideFlags: 0

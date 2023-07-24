@@ -18,7 +18,7 @@ public class Board : MonoBehaviour {
     public TileBase[] tileColor;
     public TetrominoData[] tetrominos;
     public Vector3Int spawnPosition;
-    public Vector2Int boardSize = new Vector2Int(10, 24);
+    public Vector2Int boardSize = new Vector2Int(10, 20);
     public int color;
     public int[] colorArray; // red blue green yellow purple
     public int character;
@@ -55,7 +55,7 @@ public class Board : MonoBehaviour {
     
 
 
-    private RectInt Bounds {
+    public RectInt Bounds {
         get {
             Vector2Int position = new Vector2Int(-this.boardSize.x / 2, -this.boardSize.y / 2);
             return new RectInt(position, this.boardSize);
@@ -137,8 +137,6 @@ public class Board : MonoBehaviour {
         }
 
         Set(this.activePiece);
-
-        Debug.Log("Spawned piece");
     }
 
     
@@ -383,8 +381,8 @@ public class Board : MonoBehaviour {
         int i;
         int j;
         
-        for (i = 0; i < 10; i ++){
-            for (j = 0; j < 20; j ++){
+        for (i = 0; i < boardSize.x; i ++){
+            for (j = 0; j < boardSize.y; j ++){
                 Vector3Int position = new Vector3Int(bounds.xMin + i, bounds.yMin + j, 0);
                 string name;
                 TileBase tileName;
@@ -392,7 +390,7 @@ public class Board : MonoBehaviour {
                 tileName = tilemap.GetTile(position);
 
                 if (tileName == null) {
-                    syncBoard[j * 10 + i] = 0;
+                    syncBoard[j * 10 + i] = 5;
                     continue;
                 }
                 name = tileName.ToString();
