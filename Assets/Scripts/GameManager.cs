@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     private GameOverScreen gameOverScreen;
     private Board board;
     private Health health;
+    private LobbyMenu lobbyMenu;
+    
 
     // Networking
     private NetworkGameManager networkGameManager;
@@ -37,6 +40,11 @@ public class GameManager : MonoBehaviour
     public event EventHandler ResetGame;
     public event EventHandler InitializeNetworkScript;
     public event EventHandler MultiplayerStartCountdown;
+    public event EventHandler<LoadNextSceneEventArgs> LoadNextSceneEvent;
+
+    public class LoadNextSceneEventArgs : EventArgs {
+        public string sceneName;
+    }
 
     public enum GameState {
         StartMenu,
@@ -48,26 +56,34 @@ public class GameManager : MonoBehaviour
     public enum GameType {
         Singleplayer,
         Multiplayer,
+        None,
+    }
+
+    public enum JoinLobbyMode {
+        CreateNew,
+        JoinRandom,
+        JoinWithCode,
     }
 
     private void Awake(){
         MakeSingleton();
         GameCurrentState = GameState.StartMenu;
-        GameCurrentMode = GameType.Multiplayer;
+        GameCurrentMode = GameType.None;
 
-        this.mainMenu = FindObjectOfType<MainMenu>();
-        this.optionsMenu = FindObjectOfType<OptionsMenu>();
+        mainMenu = FindObjectOfType<MainMenu>();
+        optionsMenu = FindObjectOfType<OptionsMenu>();
+        lobbyMenu = FindObjectOfType<LobbyMenu>();
     }
 
     private void OnEnable(){
-        SceneManager.activeSceneChanged += When_SceneLoaded;
-        mainMenu.StartGame += When_StartGame;
+        //SceneManager.activeSceneChanged += When_SceneLoaded;
         optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
         optionsMenu.ChangeModeEvent += When_ChangeModeEvent;
+        lobbyMenu.JoinLobby += When_JoinLobby;
     }
 
     private void OnDisable(){
-        SceneManager.activeSceneChanged -= When_SceneLoaded;
+        //SceneManager.activeSceneChanged -= When_SceneLoaded;
     }
 
     private void MakeSingleton(){
@@ -79,17 +95,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void When_StartGame(object sender, EventArgs e){
+    public void StartGame(){
+        if (GameCurrentMode == GameType.Singleplayer){
+            NetworkManager.Singleton.StartHost();
+        }
+
+        if (GameCurrentMode == GameType.Multiplayer){
+            
+        }
+        
         if (GameCurrentState == GameState.StartMenu){
             GameCurrentState = GameState.CountdownScreen;
-            LoadNextScene("Tetris");
+            //LoadNextScene("Tetris");
 
         }
     }
 
-    private void When_SceneLoaded(Scene previousScene, Scene currentScene){
-        string previousSceneName = previousScene.name;
-        string sceneName = currentScene.name;
+    private void When_SceneLoadComplete(object sender, NetworkGameManager.SceneLoadCompleteEventArgs e){
+        string sceneName = e.sceneName;
 
         ReloadGameManagerDependencies();
 
@@ -113,7 +136,6 @@ public class GameManager : MonoBehaviour
                 break;
             
             case "StartMenu" :
-                mainMenu.StartGame += When_StartGame;
                 optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
                 break;
 
@@ -182,8 +204,9 @@ public class GameManager : MonoBehaviour
 
         switch (GameCurrentState){
             case GameState.StartMenu :
-                this.mainMenu = FindObjectOfType<MainMenu>();
-                this.optionsMenu = FindObjectOfType<OptionsMenu>();
+                mainMenu = FindObjectOfType<MainMenu>();
+                optionsMenu = FindObjectOfType<OptionsMenu>();
+                lobbyMenu = FindObjectOfType<LobbyMenu>();
                 break;
 
             case GameState.CountdownScreen :
@@ -218,7 +241,6 @@ public class GameManager : MonoBehaviour
                 break;
             
             case "StartMenu" :
-                mainMenu.StartGame -= When_StartGame;
                 optionsMenu.ChangeCharacterEvent -= When_ChangeCharacterEvent;
                 break;
 
@@ -226,7 +248,8 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        SceneManager.LoadScene(sceneName);
+        //LoadNextSceneEvent?.Invoke(this, new LoadNextSceneEventArgs { sceneName = sceneName });
+        //SceneManager.LoadScene(sceneName);
 
     }
 
@@ -234,10 +257,28 @@ public class GameManager : MonoBehaviour
         networkGameManager = script;
 
         networkGameManager.MultiplayerStartCountdown += When_MultiplayerStartCountdown;
+        networkGameManager.SceneLoadComplete += When_SceneLoadComplete;
     }
 
     private void When_MultiplayerStartCountdown(object sender, EventArgs e){
         MultiplayerStartCountdown?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void When_JoinLobby(object sender, LobbyMenu.JoinLobbyEventArgs e){
+        GameManager.GameCurrentMode = GameType.Multiplayer;
+
+        Debug.Log("join lobby");
+
+        if (e.joinMode == JoinLobbyMode.JoinRandom){
+            Debug.Log("random");
+            NetworkManager.Singleton.StartClient();
+        } else if (e.joinMode == JoinLobbyMode.CreateNew){
+            Debug.Log("create");
+            NetworkManager.Singleton.StartHost();
+        }
+
+        
+        
     }
 
 }

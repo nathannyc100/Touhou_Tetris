@@ -14,7 +14,7 @@ public class NetworkPlayerManager : NetworkBehaviour
     private GameManager gameManager;
     [SerializeField]
     private GameObject networkGameManagerPrefab;
-    private GameObject networkGameManager;
+    private NetworkGameManager networkGameManager;
     private int syncBoardLength = 200;
 
     public NetworkList<ushort> syncBoard = new NetworkList<ushort>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -44,21 +44,28 @@ public class NetworkPlayerManager : NetworkBehaviour
         //syncBoard = new NetworkList<ushort>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         if (IsServer){
-            NetworkGameManager testFirstManager = FindObjectOfType<NetworkGameManager>();
+            networkGameManager = FindObjectOfType<NetworkGameManager>();
 
-            if (testFirstManager != null){
-                networkGameManager = testFirstManager.gameObject;
-                //DontDestroyOnLoad(networkGameManager);
+            if (networkGameManager != null){
                 return;
             }
 
-            networkGameManager = Instantiate(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
+            GameObject networkGameManagerGameobject = Instantiate(networkGameManagerPrefab, Vector3.zero, Quaternion.identity);
             //DontDestroyOnLoad(networkGameManager);
-            networkGameManager.GetComponent<NetworkObject>().Spawn(false);
+            networkGameManagerGameobject.GetComponent<NetworkObject>().Spawn(false);
+
+            networkGameManager = networkGameManagerGameobject.GetComponent<NetworkGameManager>();
             
 
             Debug.Log("network game manager instantiated");
         }
+
+        if (!IsHost){
+            networkGameManager = FindObjectOfType<NetworkGameManager>();
+            networkGameManager.Player2ReadyServerRPC();
+        }
+        
+
 
         base.OnNetworkSpawn();
     }

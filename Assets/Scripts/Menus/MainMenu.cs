@@ -8,7 +8,9 @@ using TMPro;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField]
-    private Button playButton;
+    private Button singleplayerButton;
+    [SerializeField]
+    private Button multiplayerButton;
     [SerializeField]
     private Button optionsButton;
     [SerializeField]
@@ -18,10 +20,11 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private GameObject optionsMenu;
 
-    public event EventHandler StartGame;
+    public event EventHandler OpenLobbyMenu;
 
     private void Awake(){
-        playButton.onClick.AddListener(() => { PlayGame(); });
+        singleplayerButton.onClick.AddListener(() => { StartSingleplayerGame(); });
+        multiplayerButton.onClick.AddListener(() => { StartMultiplayerGame(); });
         optionsButton.onClick.AddListener(() => { When_OptionsButtonClicked(); });
     }
 
@@ -32,10 +35,13 @@ public class MainMenu : MonoBehaviour
 
     
 
-    public void PlayGame(){
+    public void StartSingleplayerGame(){
+        GameManager.instance.StartGame();
+    }
 
-        StartGame?.Invoke(this, EventArgs.Empty);
-
+    public void StartMultiplayerGame(){
+        mainMenu.SetActive(false);
+        OpenLobbyMenu?.Invoke(this, EventArgs.Empty);
     }
 
     public void QuitGame(){
