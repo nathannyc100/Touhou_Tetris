@@ -52,7 +52,7 @@ public class Piece : MonoBehaviour {
         this.board = GetComponent<Board>();
         this.controlsManager = GetComponent<ControlsManager>();
         this.ghost = FindObjectOfType<Ghost>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
 
         
     }

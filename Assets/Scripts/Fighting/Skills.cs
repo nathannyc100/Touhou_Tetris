@@ -72,7 +72,7 @@ public class Skills : MonoBehaviour {
         this.buffs = GetComponent<Buffs>();
         this.controlsManager = FindObjectOfType<ControlsManager>();
         this.timing = GetComponent<Timing>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){

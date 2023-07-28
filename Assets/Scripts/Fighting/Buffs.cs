@@ -56,7 +56,7 @@ public class Buffs : MonoBehaviour
     }
 
     private void OnEnable(){
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
 
         gameManager.ResetGame += When_ResetGame_InitializeBuffs;
         skills.AddBuffs += When_AddBuffs;

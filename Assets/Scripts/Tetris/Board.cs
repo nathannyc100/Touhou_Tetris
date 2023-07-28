@@ -67,7 +67,7 @@ public class Board : MonoBehaviour {
         this.activePiece = GetComponent<Piece>();
         this.buffs = FindObjectOfType<Buffs>();
         this.skills = FindObjectOfType<Skills>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
 
         
 

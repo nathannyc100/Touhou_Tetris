@@ -20,9 +20,13 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private GameObject optionsMenu;
 
+    private GameManager gameManager;   
+
     public event EventHandler OpenLobbyMenu;
 
     private void Awake(){
+        gameManager = GameManager.Singleton;
+
         singleplayerButton.onClick.AddListener(() => { StartSingleplayerGame(); });
         multiplayerButton.onClick.AddListener(() => { StartMultiplayerGame(); });
         optionsButton.onClick.AddListener(() => { When_OptionsButtonClicked(); });
@@ -36,7 +40,7 @@ public class MainMenu : MonoBehaviour
     
 
     public void StartSingleplayerGame(){
-        GameManager.instance.StartGame();
+        gameManager.StartGame();
     }
 
     public void StartMultiplayerGame(){

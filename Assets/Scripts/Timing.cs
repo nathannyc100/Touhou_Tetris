@@ -27,7 +27,7 @@ public class Timing : MonoBehaviour
 
     private void Awake(){
         this.board = FindObjectOfType<Board>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){

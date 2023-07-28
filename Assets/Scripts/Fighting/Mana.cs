@@ -27,7 +27,7 @@ public class Mana : MonoBehaviour
         this.buffs = GetComponent<Buffs>();
         this.timing = GetComponent<Timing>();
         this.skills = GetComponent<Skills>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){

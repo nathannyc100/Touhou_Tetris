@@ -25,7 +25,7 @@ public class LobbyMenu : MonoBehaviour
 
     private void Awake(){
         mainMenu = GetComponent<MainMenu>();
-        gameManager = GameManager.instance;
+        gameManager = GameManager.Singleton;
 
         mainMenu.OpenLobbyMenu += When_OpenLobbyMenu;
 
@@ -43,10 +43,10 @@ public class LobbyMenu : MonoBehaviour
 
     private void CreateLobby(){
         Debug.Log("create lobby");
-        JoinLobby?.Invoke(this, new JoinLobbyEventArgs { joinMode = GameManager.JoinLobbyMode.CreateNew });
+        gameManager.JoinLobby(GameManager.JoinLobbyMode.CreateNew);
     }
 
     private void JoinRandomLobby(){
-        JoinLobby?.Invoke(this, new JoinLobbyEventArgs { joinMode = GameManager.JoinLobbyMode.JoinRandom });
+        gameManager.JoinLobby(GameManager.JoinLobbyMode.JoinRandom);
     }
 }

@@ -21,7 +21,7 @@ public class CountdownScreen : MonoBehaviour
     public event EventHandler CountdownFinished;
 
     private void Awake(){
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
         if (GameManager.GameCurrentMode == GameManager.GameType.Multiplayer){
             gameManager.MultiplayerStartCountdown += When_MultiplayerStartCountdown;
             startCountdown = false;

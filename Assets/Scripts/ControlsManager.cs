@@ -89,7 +89,7 @@ public class ControlsManager : MonoBehaviour,
 
     public void OnPause(InputAction.CallbackContext context){
         if (context.phase == InputActionPhase.Performed){
-            OnPausePressed?.Invoke(this, EventArgs.Empty);
+            GameManager.Singleton.PauseGame();
         }
     }
 

@@ -32,10 +32,10 @@ public class Text : MonoBehaviour
     public int num = 0;
 
     private void Awake(){
-        this.board = FindObjectOfType<Board>();
-        this.health = FindObjectOfType<Health>();
-        this.mana = FindObjectOfType<Mana>();
-        this.gameManager = GameManager.instance;
+        board = FindObjectOfType<Board>();
+        health = FindObjectOfType<Health>();
+        mana = FindObjectOfType<Mana>();
+        gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){

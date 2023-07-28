@@ -25,10 +25,10 @@ public class PauseMenu : MonoBehaviour
     public event EventHandler RestartGameEvent;
 
     private void Awake(){
-        resumeButton.onClick.AddListener(() => { ResumeGame(); } );
+        resumeButton.onClick.AddListener(() => { GameManager.Singleton.PauseGame(); } );
         exitButton.onClick.AddListener(() => { ExitGame(); });
         restartButton.onClick.AddListener(() => { RestartGame(); });
-        gameManager = GameManager.instance;
+        gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){
@@ -45,10 +45,6 @@ public class PauseMenu : MonoBehaviour
         } else {
             pauseMenuUI.SetActive(false);
         }
-    }
-
-    private void ResumeGame(){
-        ResumeGameEvent?.Invoke(this, EventArgs.Empty);
     }
 
     private void ExitGame(){

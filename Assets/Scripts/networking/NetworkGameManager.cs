@@ -6,6 +6,8 @@ using System;
 
 public class NetworkGameManager : NetworkBehaviour
 {
+    public static NetworkGameManager Singleton;
+
     private GameManager gameManager;
 
     private float startTime;
@@ -26,10 +28,22 @@ public class NetworkGameManager : NetworkBehaviour
         public string sceneName;
     }
 
+    private void MakeSingleton(){
+        if (Singleton != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Singleton = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
     public override void OnNetworkSpawn(){
+        MakeSingleton();
+
         if (IsHost || IsClient){
-            gameManager = FindObjectOfType<GameManager>();
-            gameManager.GetNetworkReference(this);
             NetworkManager.Singleton.SceneManager.OnSceneEvent += When_OnSceneEvent;
 
             

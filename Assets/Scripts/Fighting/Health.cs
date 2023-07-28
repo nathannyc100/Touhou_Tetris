@@ -32,7 +32,7 @@ public class Health : MonoBehaviour
         this.board = FindObjectOfType<Board>();
         this.buffs = GetComponent<Buffs>();
         this.skills = GetComponent<Skills>();
-        this.gameManager = GameManager.instance;
+        this.gameManager = GameManager.Singleton;
     }
 
     private void OnEnable(){

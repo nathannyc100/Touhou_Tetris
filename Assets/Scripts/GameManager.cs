@@ -7,7 +7,7 @@ using Unity.Netcode;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Singleton;
 
     // Menu scene
     private MainMenu mainMenu;
@@ -79,7 +79,6 @@ public class GameManager : MonoBehaviour
         //SceneManager.activeSceneChanged += When_SceneLoaded;
         optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
         optionsMenu.ChangeModeEvent += When_ChangeModeEvent;
-        lobbyMenu.JoinLobby += When_JoinLobby;
     }
 
     private void OnDisable(){
@@ -87,10 +86,10 @@ public class GameManager : MonoBehaviour
     }
 
     private void MakeSingleton(){
-        if (instance != null){
+        if (Singleton != null){
             Destroy(gameObject);
         } else {
-            instance = this;
+            Singleton = this;
             DontDestroyOnLoad(gameObject);
         }
     }
@@ -120,8 +119,6 @@ public class GameManager : MonoBehaviour
             case "Tetris" :
                 InitializeNetworkScript?.Invoke(this, EventArgs.Empty);
 
-                controlsManager.OnPausePressed += When_OnPausePressed;
-                pauseMenu.ResumeGameEvent += When_OnPausePressed;
                 countdownScreen.CountdownFinished += When_CountdownFinished;
                 board.GameOverEvent += When_GameOverEvent;
                 health.GameOverEvent += When_GameOverEvent;
@@ -152,19 +149,7 @@ public class GameManager : MonoBehaviour
         GameCurrentMode = e.id;
     }
 
-    private void When_OnPausePressed(object sender, EventArgs e){
-        if (GameCurrentMode == GameType.Multiplayer){
-            return;
-        }
-
-        if (gameIsPaused){
-            ResumeGame();
-        } else {
-            PauseGame();
-        }
-
-
-    }
+   
 
     private void When_CountdownFinished(object sender, EventArgs e){
         GameCurrentState = GameState.Tetris;
@@ -188,16 +173,20 @@ public class GameManager : MonoBehaviour
         LoadNextScene("StartMenu");
     }
 
-    private void PauseGame(){
-        ChangePauseMenuState?.Invoke(this, EventArgs.Empty);
-        Time.timeScale = 0f;
-        gameIsPaused = true;
-    }
+    public void PauseGame(){
+        if (GameCurrentMode == GameType.Multiplayer){
+            return;
+        }
 
-    private void ResumeGame(){
         ChangePauseMenuState?.Invoke(this, EventArgs.Empty);
-        Time.timeScale = 1f;
-        gameIsPaused = false;
+        if (gameIsPaused){
+            Time.timeScale = 1f;
+            gameIsPaused = false;
+        } else {
+            Time.timeScale = 0f;
+            gameIsPaused = true;
+        }
+        
     }
 
     public void ReloadGameManagerDependencies(){
@@ -229,8 +218,6 @@ public class GameManager : MonoBehaviour
 
         switch (currentSceneName){
             case "Tetris" :
-                controlsManager.OnPausePressed -= When_OnPausePressed;
-                pauseMenu.ResumeGameEvent -= When_OnPausePressed;
                 countdownScreen.CountdownFinished -= When_CountdownFinished;
                 board.GameOverEvent -= When_GameOverEvent;
                 health.GameOverEvent -= When_GameOverEvent;
@@ -253,8 +240,8 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void GetNetworkReference(NetworkGameManager script){
-        networkGameManager = script;
+    public void GetNetworkReference(){
+        networkGameManager = NetworkGameManager.Singleton;
 
         networkGameManager.MultiplayerStartCountdown += When_MultiplayerStartCountdown;
         networkGameManager.SceneLoadComplete += When_SceneLoadComplete;
@@ -264,15 +251,15 @@ public class GameManager : MonoBehaviour
         MultiplayerStartCountdown?.Invoke(this, EventArgs.Empty);
     }
 
-    private void When_JoinLobby(object sender, LobbyMenu.JoinLobbyEventArgs e){
+    public void JoinLobby(JoinLobbyMode joinMode){
         GameManager.GameCurrentMode = GameType.Multiplayer;
 
         Debug.Log("join lobby");
 
-        if (e.joinMode == JoinLobbyMode.JoinRandom){
+        if (joinMode == JoinLobbyMode.JoinRandom){
             Debug.Log("random");
             NetworkManager.Singleton.StartClient();
-        } else if (e.joinMode == JoinLobbyMode.CreateNew){
+        } else if (joinMode == JoinLobbyMode.CreateNew){
             Debug.Log("create");
             NetworkManager.Singleton.StartHost();
         }
