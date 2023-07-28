@@ -78,7 +78,6 @@ public class GameManager : MonoBehaviour
     private void OnEnable(){
         //SceneManager.activeSceneChanged += When_SceneLoaded;
         optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
-        optionsMenu.ChangeModeEvent += When_ChangeModeEvent;
     }
 
     private void OnDisable(){
@@ -144,12 +143,6 @@ public class GameManager : MonoBehaviour
     private void When_ChangeCharacterEvent(object sender, OptionsMenu.ChangeCharacterEventEventArgs e){
         this.character = e.id;
     }
-
-    private void When_ChangeModeEvent(object sender, OptionsMenu.ChangeModeEventEventArgs e){
-        GameCurrentMode = e.id;
-    }
-
-   
 
     private void When_CountdownFinished(object sender, EventArgs e){
         GameCurrentState = GameState.Tetris;
