@@ -8,8 +8,9 @@ public class Board : MonoBehaviour {
 
     private Buffs buffs;
     private GameManager gameManager;
-    private Skills skills;
     private Piece activePiece;
+    private Ghost ghost;
+    private NetworkGameManager networkGameManager;
 
     public Tilemap tilemap;
     
@@ -38,8 +39,8 @@ public class Board : MonoBehaviour {
     public Controls controls;
 
     public event EventHandler<LineClearedEventArgs> LineCleared;
-    public event EventHandler GameOverEvent;
     public event EventHandler<UpdateSyncBoardEventArgs> UpdateSyncBoardEvent;
+    public event EventHandler<UpdateSyncHoldEventArgs> UpdateSyncHoldEvent;
     
     
     public class LineClearedEventArgs : EventArgs {
@@ -48,6 +49,11 @@ public class Board : MonoBehaviour {
 
     public class UpdateSyncBoardEventArgs : EventArgs {
         public int[] syncBoard;
+    }
+
+    public class UpdateSyncHoldEventArgs : EventArgs {
+        public int hold;
+        public int color;
     }
     
     public Vector3Int holdPosition = new Vector3Int(-10, 5);
@@ -63,12 +69,12 @@ public class Board : MonoBehaviour {
     }
 
     private void Awake() {
-        this.tilemap = GetComponentInChildren<Tilemap>();
-        this.activePiece = GetComponent<Piece>();
-        this.buffs = FindObjectOfType<Buffs>();
-        this.skills = FindObjectOfType<Skills>();
-        this.gameManager = GameManager.Singleton;
-
+        tilemap = GetComponentInChildren<Tilemap>();
+        activePiece = GetComponent<Piece>();
+        buffs = FindObjectOfType<Buffs>();
+        ghost = FindObjectOfType<Ghost>();
+        gameManager = GameManager.Singleton;
+        networkGameManager = NetworkGameManager.Singleton;
         
 
         for (int i = 0; i < this.tetrominos.Length; i ++){
@@ -79,12 +85,12 @@ public class Board : MonoBehaviour {
     }
 
     private void OnEnable(){
-        gameManager.ResetGame += When_ResetGame;
+        networkGameManager.ResetGame += When_ResetGame;
         buffs.BuffDisappeared += When_BuffDisappeared_LineClear;
     }
 
     private void OnDisable(){
-        gameManager.ResetGame -= When_ResetGame;
+        networkGameManager.ResetGame -= When_ResetGame;
         buffs.BuffDisappeared -= When_BuffDisappeared_LineClear;
     }
 
@@ -133,35 +139,36 @@ public class Board : MonoBehaviour {
         if (IsValidPosition(this.activePiece, this.spawnPosition, 0)){
             Set(this.activePiece);
         } else {
-            GameOver();
+            networkGameManager.GameOver();
         }
 
         Set(this.activePiece);
+        ghost.UpdateGhostBoard();
     }
 
     
     public void SpawnPieceHold(){
-        TetrominoData data = this.tetrominos[activePieceData.type];
+        TetrominoData data = tetrominos[activePieceData.type];
         Vector2Int[] holdData = new Vector2Int[4];
         for (int i = 0; i < 4; i ++){
             holdData[i] = Data.originalOrient[holdPieceData.type * 4, i];
         }
 
-        this.activePiece.Initialize(this, this.spawnPosition, data);
+        activePiece.Initialize(this, spawnPosition, data);
         
         for (int i = 0; i < 4; i ++){
-            this.holdPiece[i] = (Vector3Int)holdData[i];
+            holdPiece[i] = (Vector3Int)holdData[i];
         }
 
 
-        if (IsValidPosition(this.activePiece, this.spawnPosition, 0)){
-            Set(this.activePiece);
+        if (IsValidPosition(activePiece, spawnPosition, 0)){
+            Set(activePiece);
         } else {
-            GameOver();
+            networkGameManager.GameOver();
         }
 
-        Set(this.activePiece);
-        
+        Set(activePiece);
+        ghost.UpdateGhostBoard();
     }
     
 
@@ -176,12 +183,6 @@ public class Board : MonoBehaviour {
             this.holdPiece[i] = (Vector3Int)data[i];
         }
     }
-    
-
-    private void GameOver(){
-        GameOverEvent?.Invoke(this, EventArgs.Empty);
-        
-    }
 
     private void When_ResetGame(object sender, EventArgs e){
         this.tilemap.ClearAllTiles();
@@ -194,14 +195,17 @@ public class Board : MonoBehaviour {
             Vector3Int tilePosition = (Vector3Int)Data.originalOrient[(activePieceData.type * 4) + activePieceData.orient, i] + piece.position;      //piece.cells[i] + piece.position;
             this.tilemap.SetTile(tilePosition, this.tileColor[this.activePieceData.color]);
         }
+        UpdateSyncBoard();
     }
 
     
     public void SetHold(Vector3Int[] holdPiece){
         for (int i = 0; i < holdPiece.Length; i++){
             Vector3Int holdGrid = holdPiece[i] + holdPosition;
-            this.tilemap.SetTile(holdGrid, this.tileColor[this.holdPieceData.color]);
+            tilemap.SetTile(holdGrid, tileColor[holdPieceData.color]);
         }
+
+        UpdateSyncHoldEvent?.Invoke(this, new UpdateSyncHoldEventArgs { hold = holdPieceData.type , color = holdPieceData.color });
     }
     
 
@@ -216,20 +220,17 @@ public class Board : MonoBehaviour {
     public void Hold(Piece piece){
         if (holdOnce){
             if (holdStart){
-                Clear(this.activePiece);
+                Clear(activePiece);
                 holdPieceData.type = activePieceData.type;
                 holdPieceData.color = activePieceData.color;
                 holdStart = false;
                 HoldPieceInitialize();
                 SpawnPiece();
             } else {
-                Clear(this.activePiece);
+                Clear(activePiece);
                 temp = holdPieceData.type;
                 holdPieceData.type = activePieceData.type;
                 activePieceData.type = temp;
-                temp = holdPieceData.color;
-                holdPieceData.color = activePieceData.color;
-                activePieceData.color = temp;
                 SpawnPieceHold();
             }
             ClearHold();
@@ -368,7 +369,7 @@ public class Board : MonoBehaviour {
         }
     }
 
-    private void When_BuffDisappeared_LineClear(object sender, Buffs.BuffDisappearedEventArgs e){
+    private void When_BuffDisappeared_LineClear(object sender, Buffs.BuffDisappearedEventArgs e){ 
         if (e.id != CharacterData.BuffName.StopClearing){
             return;
         }
@@ -380,7 +381,7 @@ public class Board : MonoBehaviour {
         RectInt bounds = this.Bounds;
         int i;
         int j;
-        
+
         for (i = 0; i < boardSize.x; i ++){
             for (j = 0; j < boardSize.y; j ++){
                 Vector3Int position = new Vector3Int(bounds.xMin + i, bounds.yMin + j, 0);
@@ -396,6 +397,7 @@ public class Board : MonoBehaviour {
                 name = tileName.ToString();
 
                 syncBoard[j * 10 + i] = ColorIndex(name);
+
             }
         }
 

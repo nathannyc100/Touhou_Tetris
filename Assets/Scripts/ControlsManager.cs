@@ -34,6 +34,11 @@ public class ControlsManager : MonoBehaviour,
         RotateLeft,
         RotateRight,
         Hold,
+        SelectLeft,
+        SelectRight,
+        SelectLeftHeld,
+        SelectRightHeld,   
+        SelectCancelled,
     }
 
 
@@ -89,7 +94,7 @@ public class ControlsManager : MonoBehaviour,
 
     public void OnPause(InputAction.CallbackContext context){
         if (context.phase == InputActionPhase.Performed){
-            GameManager.Singleton.PauseGame();
+            //NetworkTimingManager.Singleton.PauseGameServerRPC(!NetworkTimingManager.Singleton.network_gameIsPaused.Value);
         }
     }
 
@@ -150,6 +155,32 @@ public class ControlsManager : MonoBehaviour,
 
         if (context.phase == InputActionPhase.Canceled){
             OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.HorizontalCancelled } );
+        }
+    }
+
+    public void OnCharacterSelect(InputAction.CallbackContext context) {
+        float value = context.ReadValue<float>();
+
+        if (context.phase == InputActionPhase.Started) {
+            if (value == 1) {
+                OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SelectRight });
+            }
+            else if (value == -1) {
+                OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SelectRight });
+            }
+        }
+
+        if (context.phase == InputActionPhase.Performed) {
+            if (value == 1) {
+                OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SelectRightHeld });
+            }
+            else if (value == -1) {
+                OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SelectLeftHeld });
+            }
+        }
+
+        if (context.phase == InputActionPhase.Canceled) {
+            OnKeyPressed?.Invoke(this, new OnKeyPressedEventArgs { action = ActionName.SelectCancelled });
         }
     }
 }

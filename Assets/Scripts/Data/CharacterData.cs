@@ -128,31 +128,31 @@ public static class CharacterData
         public float[] multiplier;
     }
     
-    public static readonly Dictionary<int, Character> Characters = new Dictionary<int, Character>(){
-        { 0, new Character { name = "Test Character", health = 50000, attack = 1000f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
-        { 1, new Character { name = "博麗靈夢", health = 50000, attack = 5.0f, multiplier = new float[]{ 2.0f, 1.0f, 1.0f, 1.0f, 0.75f } } },
-        { 2, new Character { name = "霧雨魔理沙", health = 46000, attack = 5.4f, multiplier = new float[]{ 1.0f, 0.5f, 0.5f, 3.5f, 0.5f } } },
-        { 3, new Character { name = "帕秋莉  諾蕾姬", health = 35000, attack = 5.8f, multiplier = new float[]{ 2.0f, 2.0f, 2.0f, 2.0f, 2.0f } } },
-        { 4, new Character { name = "十六夜 咲夜", health = 47000, attack = 4.7f, multiplier = new float[]{ 1.5f, 2.0f, 0.5f, 0.75f, 0.5f } } },
-        { 5, new Character { name = "蕾米莉亞 斯卡蕾特", health = 42000, attack = 5.7f, multiplier = new float[]{ 2.5f, 0.5f, 0.75f, 1.0f, 2.0f } } },
-        { 6, new Character { name = "芙蘭朵露 斯卡蕾特", health = 39000, attack = 6.0f, multiplier = new float[]{ 3.0f, 0.5f, 0.5f, 1.0f, 0.5f } } },
-        { 7, new Character { name = "伊吹翠香", health = 45000, attack = 5.7f, multiplier = new float[]{ 1.5f, 1.5f, 1.5f, 1.5f, 1.5f } } },
-        { 8, new Character { name = "古明地覺", health = 50000, attack = 4.5f, multiplier = new float[]{ 2.0f, 0.5f, 1.5f, 1.0f, 1.0f } } },
-        { 9, new Character { name = "古明地戀", health = 46000, attack = 5.5f, multiplier = new float[]{ 1.0f, 0.5f, 2.5f, 1.0f, 1.0f } } },
-        { 10, new Character { name = "洩矢諏訪子", health = 48000, attack = 5.0f, multiplier = new float[]{ 1.0f, 2.0f, 1.0f, 2.0f, 0.5f } } },
-        { 11, new Character { name = "河城荷取", health = 49000, attack = 4.3f, multiplier = new float[]{ 0.5f, 3.0f, 0.5f, 0.5f, 1.0f } } },
-        { 12, new Character { name = "藤原妹紅", health = 55000, attack = 5.5f, multiplier = new float[]{ 3.0f, 0.25f, 0.5f, 1.0f, 1.0f } } },
-        { 13, new Character { name = "四季映姬 亞瑪薩那度", health = 40000, attack = 5.0f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
-        { 14, new Character { name = "射命丸文", health = 40000, attack = 4.1f, multiplier = new float[]{ 1.5f, 0.5f, 2.0f, 1.0f, 1.5f } } },
-        { 15, new Character { name = "比那名居 天子", health = 50000, attack = 5.0f, multiplier = new float[]{ 1.0f, 2.0f, 2.0f, 1.0f, 1.0f } } },
-        { 16, new Character { name = "克勞恩皮絲", health = 38000, attack = 5.3f, multiplier = new float[]{ 2.5f, 0.5f, 0.5f, 1.0f, 1.5f } } },
-        { 17, new Character { name = "純狐", health = 35000, attack = 6.0f, multiplier = new float[]{ 3.0f, 0.5f, 0.5f, 0.5f, 0.5f } } },
-        { 18, new Character { name = "赫卡提亞 拉碧斯拉祖利", health = 54000, attack = 5.6f, multiplier = new float[]{ 1.5f, 1.5f, 1.5f, 1.5f, 1.5f } } },
-        { 19, new Character { name = "埴安神袿姬", health = 50000, attack = 4.0f, multiplier = new float[]{ 0.5f, 1.5f, 2.0f, 2.0f, 1.5f } } },
-        { 20, new Character { name = "饕餮尤魔", health = 40000, attack = 6.0f, multiplier = new float[]{ 0.5f, 2.5f, 0.5f, 0.5f, 2.5f } } },
-        { 21, new Character { name = "魂魄妖夢", health = 40000, attack = 5.0f, multiplier = new float[]{ 1.0f, 1.5f, 2.0f, 1.0f, 1.5f } } },
-        { 22, new Character { name = "依神紫苑, 依神女苑", health = 70000, attack = 7.0f, multiplier = new float[]{ 0.5f, 2.0f, 0.25f, 2.5f, 2.5f } } },
-    };
+    //public static readonly Dictionary<int, Character> Characters = new Dictionary<int, Character>(){
+    //    { 0, new Character { name = "Test Character", health = 50000, attack = 1000f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
+    //    { 1, new Character { name = "博麗靈夢", health = 50000, attack = 5.0f, multiplier = new float[]{ 2.0f, 1.0f, 1.0f, 1.0f, 0.75f } } },
+    //    { 2, new Character { name = "霧雨魔理沙", health = 46000, attack = 5.4f, multiplier = new float[]{ 1.0f, 0.5f, 0.5f, 3.5f, 0.5f } } },
+    //    { 3, new Character { name = "帕秋莉  諾蕾姬", health = 35000, attack = 5.8f, multiplier = new float[]{ 2.0f, 2.0f, 2.0f, 2.0f, 2.0f } } },
+    //    { 4, new Character { name = "十六夜 咲夜", health = 47000, attack = 4.7f, multiplier = new float[]{ 1.5f, 2.0f, 0.5f, 0.75f, 0.5f } } },
+    //    { 5, new Character { name = "蕾米莉亞 斯卡蕾特", health = 42000, attack = 5.7f, multiplier = new float[]{ 2.5f, 0.5f, 0.75f, 1.0f, 2.0f } } },
+    //    { 6, new Character { name = "芙蘭朵露 斯卡蕾特", health = 39000, attack = 6.0f, multiplier = new float[]{ 3.0f, 0.5f, 0.5f, 1.0f, 0.5f } } },
+    //    { 7, new Character { name = "伊吹翠香", health = 45000, attack = 5.7f, multiplier = new float[]{ 1.5f, 1.5f, 1.5f, 1.5f, 1.5f } } },
+    //    { 8, new Character { name = "古明地覺", health = 50000, attack = 4.5f, multiplier = new float[]{ 2.0f, 0.5f, 1.5f, 1.0f, 1.0f } } },
+    //    { 9, new Character { name = "古明地戀", health = 46000, attack = 5.5f, multiplier = new float[]{ 1.0f, 0.5f, 2.5f, 1.0f, 1.0f } } },
+    //    { 10, new Character { name = "洩矢諏訪子", health = 48000, attack = 5.0f, multiplier = new float[]{ 1.0f, 2.0f, 1.0f, 2.0f, 0.5f } } },
+    //    { 11, new Character { name = "河城荷取", health = 49000, attack = 4.3f, multiplier = new float[]{ 0.5f, 3.0f, 0.5f, 0.5f, 1.0f } } },
+    //    { 12, new Character { name = "藤原妹紅", health = 55000, attack = 5.5f, multiplier = new float[]{ 3.0f, 0.25f, 0.5f, 1.0f, 1.0f } } },
+    //    { 13, new Character { name = "四季映姬 亞瑪薩那度", health = 40000, attack = 5.0f, multiplier = new float[]{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } },
+    //    { 14, new Character { name = "射命丸文", health = 40000, attack = 4.1f, multiplier = new float[]{ 1.5f, 0.5f, 2.0f, 1.0f, 1.5f } } },
+    //    { 15, new Character { name = "比那名居 天子", health = 50000, attack = 5.0f, multiplier = new float[]{ 1.0f, 2.0f, 2.0f, 1.0f, 1.0f } } },
+    //    { 16, new Character { name = "克勞恩皮絲", health = 38000, attack = 5.3f, multiplier = new float[]{ 2.5f, 0.5f, 0.5f, 1.0f, 1.5f } } },
+    //    { 17, new Character { name = "純狐", health = 35000, attack = 6.0f, multiplier = new float[]{ 3.0f, 0.5f, 0.5f, 0.5f, 0.5f } } },
+    //    { 18, new Character { name = "赫卡提亞 拉碧斯拉祖利", health = 54000, attack = 5.6f, multiplier = new float[]{ 1.5f, 1.5f, 1.5f, 1.5f, 1.5f } } },
+    //    { 19, new Character { name = "埴安神袿姬", health = 50000, attack = 4.0f, multiplier = new float[]{ 0.5f, 1.5f, 2.0f, 2.0f, 1.5f } } },
+    //    { 20, new Character { name = "饕餮尤魔", health = 40000, attack = 6.0f, multiplier = new float[]{ 0.5f, 2.5f, 0.5f, 0.5f, 2.5f } } },
+    //    { 21, new Character { name = "魂魄妖夢", health = 40000, attack = 5.0f, multiplier = new float[]{ 1.0f, 1.5f, 2.0f, 1.0f, 1.5f } } },
+    //    { 22, new Character { name = "依神紫苑, 依神女苑", health = 70000, attack = 7.0f, multiplier = new float[]{ 0.5f, 2.0f, 0.25f, 2.5f, 2.5f } } },
+    //};
 
     public static readonly SkillData[,] skillData = new SkillData[,]{
         {

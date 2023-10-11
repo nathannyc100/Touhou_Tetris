@@ -143,6 +143,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold(duration=0.1)"",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CharacterSelect"",
+                    ""type"": ""Value"",
+                    ""id"": ""09d7b139-88e1-4d2c-be81-8d8b5750778c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -354,6 +363,39 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""HorizontalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""6cf693bf-a692-4786-8f73-702f5163c385"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CharacterSelect"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""c91467ee-c92f-4944-b958-1cf71f53b81d"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CharacterSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""75182886-acb9-4a59-b738-a331bff72f05"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CharacterSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -387,6 +429,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Keyboard_Skill5 = m_Keyboard.FindAction("Skill5", throwIfNotFound: true);
         m_Keyboard_SkillFinal = m_Keyboard.FindAction("SkillFinal", throwIfNotFound: true);
         m_Keyboard_HorizontalMovement = m_Keyboard.FindAction("HorizontalMovement", throwIfNotFound: true);
+        m_Keyboard_CharacterSelect = m_Keyboard.FindAction("CharacterSelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -459,6 +502,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Keyboard_Skill5;
     private readonly InputAction m_Keyboard_SkillFinal;
     private readonly InputAction m_Keyboard_HorizontalMovement;
+    private readonly InputAction m_Keyboard_CharacterSelect;
     public struct KeyboardActions
     {
         private @Controls m_Wrapper;
@@ -476,6 +520,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Skill5 => m_Wrapper.m_Keyboard_Skill5;
         public InputAction @SkillFinal => m_Wrapper.m_Keyboard_SkillFinal;
         public InputAction @HorizontalMovement => m_Wrapper.m_Keyboard_HorizontalMovement;
+        public InputAction @CharacterSelect => m_Wrapper.m_Keyboard_CharacterSelect;
         public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -524,6 +569,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @HorizontalMovement.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
                 @HorizontalMovement.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
                 @HorizontalMovement.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnHorizontalMovement;
+                @CharacterSelect.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnCharacterSelect;
+                @CharacterSelect.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnCharacterSelect;
+                @CharacterSelect.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnCharacterSelect;
             }
             m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
             if (instance != null)
@@ -567,6 +615,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @HorizontalMovement.started += instance.OnHorizontalMovement;
                 @HorizontalMovement.performed += instance.OnHorizontalMovement;
                 @HorizontalMovement.canceled += instance.OnHorizontalMovement;
+                @CharacterSelect.started += instance.OnCharacterSelect;
+                @CharacterSelect.performed += instance.OnCharacterSelect;
+                @CharacterSelect.canceled += instance.OnCharacterSelect;
             }
         }
     }
@@ -595,5 +646,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnSkill5(InputAction.CallbackContext context);
         void OnSkillFinal(InputAction.CallbackContext context);
         void OnHorizontalMovement(InputAction.CallbackContext context);
+        void OnCharacterSelect(InputAction.CallbackContext context);
     }
 }

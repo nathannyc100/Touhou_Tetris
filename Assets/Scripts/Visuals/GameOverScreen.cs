@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using TMPro;
+using Unity.Netcode;
 
 public class GameOverScreen : MonoBehaviour
 {
@@ -14,41 +16,59 @@ public class GameOverScreen : MonoBehaviour
     private Button quitButton;
     private Board board;
     private Health health;
+    private GameManager gameManager;
+    private NetworkGameManager networkGameManager;
+    [SerializeField]
+    private TextMeshProUGUI gameOverText;
 
     public event EventHandler RestartGameEvent;
     public event EventHandler BackToStartMenu;
 
 
     private void Awake(){
-        restartButton.onClick.AddListener(() => { RestartGame(); });
-        quitButton.onClick.AddListener(() => { QuitGame(); });
+        gameManager = GameManager.Singleton;
+        networkGameManager = NetworkGameManager.Singleton;
+        board = FindObjectOfType<Board>();
+        health = FindObjectOfType<Health>();
 
-        this.board = FindObjectOfType<Board>();
-        this.health = FindObjectOfType<Health>();
+        restartButton.onClick.AddListener(() => { RestartGame(); });
+        quitButton.onClick.AddListener(() => { gameManager.BackToStartaMenu(); });
+
+        
     }
 
     private void OnEnable(){
-        board.GameOverEvent += When_GameOverEvent;
-        health.GameOverEvent += When_GameOverEvent;
+        networkGameManager.GameOverEvent += When_GameOver;
     }
 
     private void OnDisable(){
-        board.GameOverEvent -= When_GameOverEvent;
-        health.GameOverEvent -= When_GameOverEvent;
+        networkGameManager.GameOverEvent -= When_GameOver;
     }
 
-    private void When_GameOverEvent(object sender, EventArgs e){
+    private void When_GameOver(object sender, NetworkGameManager.GameOverEventArgs e){
         gameOverScreen.SetActive(true); 
+        if (e.won){
+            gameOverText.text = "You won";
+        } else {
+            gameOverText.text = "You lost";
+        }
+    }
+
+    public void OpenGameOverScreen(bool won){
+        gameOverScreen.SetActive(true); 
+        if (won){
+            gameOverText.text = "You won";
+        } else {
+            gameOverText.text = "You lost";
+        }
     }
 
     private void RestartGame(){
-        RestartGameEvent?.Invoke(this, EventArgs.Empty);
+        networkGameManager.RestartGameServerRPC();
         gameOverScreen.SetActive(false);
     }
 
-    private void QuitGame(){
-        BackToStartMenu?.Invoke(this, EventArgs.Empty);
-    }
+
 }
 
 

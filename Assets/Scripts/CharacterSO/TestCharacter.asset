@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d31aa5c68753d546a3b5b253720400f, type: 3}
+  m_Name: TestCharacter
+  m_EditorClassIdentifier: 
+  characterName: Test
+  characterImage: {fileID: 0}
+  characterHealth: 10000
+  characterAttack: 10
+  colorMultiplier:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  characterText: 
+  characterSkills: {fileID: 2358156974310363637, guid: 47b887eb76598af4a98e9d01443a5b77, type: 3}
+  skillMana: 0000000000000000000000000000000000000000
+  skillDuration: 0000000000000000000000000000000000000000
+  skillCD: 0000000000000000000000000000000000000000
+  isPassive: 0000000000

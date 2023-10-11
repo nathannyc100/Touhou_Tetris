@@ -40,10 +40,8 @@ public class Buffs : MonoBehaviour
     [SerializeField]
     private Board board;
     [SerializeField]
-    private Skills skills;
-    [SerializeField]
-    private Timing timing;
     private GameManager gameManager;
+    private NetworkGameManager networkGameManager;
 
     private List<CharacterBuffs> characterBuffs;
     public TotalBuffs totalBuffs;
@@ -55,12 +53,17 @@ public class Buffs : MonoBehaviour
         public CharacterData.BuffName id;
     }
 
-    private void OnEnable(){
-        this.gameManager = GameManager.Singleton;
+    private void Awake() {
+        gameManager = GameManager.Singleton;
+        networkGameManager = NetworkGameManager.Singleton;
+    }
 
-        gameManager.ResetGame += When_ResetGame_InitializeBuffs;
-        skills.AddBuffs += When_AddBuffs;
-        timing.TimeIncrement += When_TimeIncrement;
+    private void OnEnable(){
+        networkGameManager.ResetGame += When_ResetGame_InitializeBuffs;
+    }
+
+    private void OnDisable() {
+        networkGameManager.ResetGame -= When_ResetGame_InitializeBuffs;
     }
 
     // reset buff values when game reset
@@ -91,24 +94,10 @@ public class Buffs : MonoBehaviour
     }
 
     // function to add buff to list when event triggered, first check if there is the same buff already on the list 
-    private void When_AddBuffs(object sender, Skills.AddBuffsEventArgs e){
-        foreach (CharacterBuffs buffs in characterBuffs){
-            if (buffs.skillTag == e.skillTag && buffs.buffTag == e.buffTag){
-                buffs.currentTime = 0;
-                return;
-            }
-        }
 
-        AddBuffsToList(e);
-    }
-
-    // add buff to list
-    private void AddBuffsToList(Skills.AddBuffsEventArgs e){
-        characterBuffs.Add( new CharacterBuffs { id = e.id, skillTag = e.skillTag, buffTag = e.buffTag, buffAmount = e.buffAmount, selecterValue = e.selecterValue, color = e.color, key = e.key, duration = e.duration, currentTime = 0 } );
-        RecalculateTotalBuffs();
-    }
 
     // function to handle buff uptime everytime time ticks
+    /**
     private void When_TimeIncrement(object sender, Timing.TimeIncrementEventArgs e){
         if (characterBuffs != null){
             foreach (CharacterBuffs buffs in characterBuffs){
@@ -135,7 +124,7 @@ public class Buffs : MonoBehaviour
             calculateTotaluffs = false;
         }
     }
-
+    **/
     // recalculate total buffs
     private void RecalculateTotalBuffs(){
         InitializeBuffs();

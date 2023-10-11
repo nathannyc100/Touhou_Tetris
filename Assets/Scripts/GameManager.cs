@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     // Menu scene
     private MainMenu mainMenu;
     private OptionsMenu optionsMenu;
+    private CharacterManager characterManager;
 
     // Tetris scene
     private ControlsManager controlsManager;
@@ -36,11 +37,11 @@ public class GameManager : MonoBehaviour
     public static bool gameIsPaused;
     public static GameType GameCurrentMode;
 
-    public event EventHandler ChangePauseMenuState;
     public event EventHandler ResetGame;
     public event EventHandler InitializeNetworkScript;
     public event EventHandler MultiplayerStartCountdown;
     public event EventHandler<LoadNextSceneEventArgs> LoadNextSceneEvent;
+    public event EventHandler OpenCharacterSelectMenu;
 
     public class LoadNextSceneEventArgs : EventArgs {
         public string sceneName;
@@ -73,15 +74,7 @@ public class GameManager : MonoBehaviour
         mainMenu = FindObjectOfType<MainMenu>();
         optionsMenu = FindObjectOfType<OptionsMenu>();
         lobbyMenu = FindObjectOfType<LobbyMenu>();
-    }
-
-    private void OnEnable(){
-        //SceneManager.activeSceneChanged += When_SceneLoaded;
-        optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
-    }
-
-    private void OnDisable(){
-        //SceneManager.activeSceneChanged -= When_SceneLoaded;
+        characterManager = FindObjectOfType<CharacterManager>();
     }
 
     private void MakeSingleton(){
@@ -117,22 +110,9 @@ public class GameManager : MonoBehaviour
         switch (sceneName){
             case "Tetris" :
                 InitializeNetworkScript?.Invoke(this, EventArgs.Empty);
-
-                countdownScreen.CountdownFinished += When_CountdownFinished;
-                board.GameOverEvent += When_GameOverEvent;
-                health.GameOverEvent += When_GameOverEvent;
-                gameOverScreen.RestartGameEvent += When_RestartGameEvent;
-                pauseMenu.BackToStartMenu += When_BackToStartMenu;
-                pauseMenu.RestartGameEvent += When_RestartGameEvent;
-                gameOverScreen.BackToStartMenu += When_BackToStartMenu;
-
-                gameIsPaused = false;
-                Time.timeScale = 1f;
-                ResetGame?.Invoke(this, EventArgs.Empty);
                 break;
             
             case "StartMenu" :
-                optionsMenu.ChangeCharacterEvent += When_ChangeCharacterEvent;
                 break;
 
             default :
@@ -140,46 +120,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void When_ChangeCharacterEvent(object sender, OptionsMenu.ChangeCharacterEventEventArgs e){
-        this.character = e.id;
+    public void ChangeCharacter(int value){
+        character = value;
     }
 
-    private void When_CountdownFinished(object sender, EventArgs e){
-        GameCurrentState = GameState.Tetris;
-        countdownScreen.CountdownFinished -= When_CountdownFinished;
-    }
-
-    private void When_GameOverEvent(object sender, EventArgs e){
-        GameCurrentState = GameState.GameOver;
-    }
-
-    private void When_RestartGameEvent(object sender, EventArgs e){
-        gameIsPaused = false;
-        Time.timeScale = 1f;
-        GameCurrentState = GameState.CountdownScreen;
-        ResetGame?.Invoke(this, EventArgs.Empty);
-        countdownScreen.CountdownFinished += When_CountdownFinished;
-    }
-
-    private void When_BackToStartMenu(object sender, EventArgs e){
+    public void BackToStartaMenu(){
         GameCurrentState = GameState.StartMenu;
         LoadNextScene("StartMenu");
-    }
-
-    public void PauseGame(){
-        if (GameCurrentMode == GameType.Multiplayer){
-            return;
-        }
-
-        ChangePauseMenuState?.Invoke(this, EventArgs.Empty);
-        if (gameIsPaused){
-            Time.timeScale = 1f;
-            gameIsPaused = false;
-        } else {
-            Time.timeScale = 0f;
-            gameIsPaused = true;
-        }
-        
     }
 
     public void ReloadGameManagerDependencies(){
@@ -192,12 +139,12 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.CountdownScreen :
-                this.controlsManager = FindObjectOfType<ControlsManager>();
-                this.pauseMenu = FindObjectOfType<PauseMenu>();
-                this.countdownScreen = FindObjectOfType<CountdownScreen>();
-                this.gameOverScreen = FindObjectOfType<GameOverScreen>();
-                this.board = FindObjectOfType<Board>();
-                this.health = FindObjectOfType<Health>();
+                controlsManager = FindObjectOfType<ControlsManager>();
+                pauseMenu = FindObjectOfType<PauseMenu>();
+                countdownScreen = FindObjectOfType<CountdownScreen>();
+                gameOverScreen = FindObjectOfType<GameOverScreen>();
+                board = FindObjectOfType<Board>();
+                health = FindObjectOfType<Health>();
                 break;
 
             default :
@@ -211,17 +158,9 @@ public class GameManager : MonoBehaviour
 
         switch (currentSceneName){
             case "Tetris" :
-                countdownScreen.CountdownFinished -= When_CountdownFinished;
-                board.GameOverEvent -= When_GameOverEvent;
-                health.GameOverEvent -= When_GameOverEvent;
-                gameOverScreen.RestartGameEvent -= When_RestartGameEvent;
-                pauseMenu.BackToStartMenu -= When_BackToStartMenu;
-                pauseMenu.RestartGameEvent -= When_RestartGameEvent;
-                gameOverScreen.BackToStartMenu -= When_BackToStartMenu;
                 break;
             
             case "StartMenu" :
-                optionsMenu.ChangeCharacterEvent -= When_ChangeCharacterEvent;
                 break;
 
             default :
@@ -254,11 +193,12 @@ public class GameManager : MonoBehaviour
             NetworkManager.Singleton.StartClient();
         } else if (joinMode == JoinLobbyMode.CreateNew){
             Debug.Log("create");
-            NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartHost(); 
         }
 
-        
-        
+        OpenCharacterSelectMenu?.Invoke(this, EventArgs.Empty);
+
+        Debug.Log("Open menu");
     }
 
 }

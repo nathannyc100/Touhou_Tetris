@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     private GameManager gameManager;
+    private NetworkGameManager networkGameManager;
 
     // Ui GameObject
     [SerializeField]
@@ -21,39 +22,23 @@ public class PauseMenu : MonoBehaviour
     private Button restartButton;
 
     public event EventHandler ResumeGameEvent;
-    public event EventHandler BackToStartMenu;
-    public event EventHandler RestartGameEvent;
 
     private void Awake(){
-        resumeButton.onClick.AddListener(() => { GameManager.Singleton.PauseGame(); } );
-        exitButton.onClick.AddListener(() => { ExitGame(); });
-        restartButton.onClick.AddListener(() => { RestartGame(); });
         gameManager = GameManager.Singleton;
+        networkGameManager = NetworkGameManager.Singleton;
+
+        //resumeButton.onClick.AddListener(() => { NetworkTimingManager.Singleton.PauseGameServerRPC(!NetworkTimingManager.Singleton.network_gameIsPaused.Value); } );
+        exitButton.onClick.AddListener(() => { gameManager.BackToStartaMenu(); });
+        restartButton.onClick.AddListener(() => { RestartGame(); });
     }
 
-    private void OnEnable(){
-        gameManager.ChangePauseMenuState += When_ChangePauseMenuState;
-    }
-
-    private void OnDisable(){
-        gameManager.ChangePauseMenuState -= When_ChangePauseMenuState;
-    }
-
-    private void When_ChangePauseMenuState(object sender, EventArgs e){
-        if (!GameManager.gameIsPaused){
-            pauseMenuUI.SetActive(true);
-        } else {
-            pauseMenuUI.SetActive(false);
-        }
-    }
-
-    private void ExitGame(){
-        BackToStartMenu?.Invoke(this, EventArgs.Empty);
+    public void TogglePauseMenu(bool pauseMenuOn) {
+        pauseMenuUI.SetActive(pauseMenuOn);
     }
 
     private void RestartGame(){
         pauseMenuUI.SetActive(false);
-        RestartGameEvent?.Invoke(this, EventArgs.Empty);
+        networkGameManager.RestartGameServerRPC();
     }
 
 }

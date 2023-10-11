@@ -23,6 +23,7 @@ public class MainMenu : MonoBehaviour
     private GameManager gameManager;   
 
     public event EventHandler OpenLobbyMenu;
+    public event EventHandler OpenCharacterSelectMenu;
 
     private void Awake(){
         gameManager = GameManager.Singleton;
@@ -40,7 +41,9 @@ public class MainMenu : MonoBehaviour
     
 
     public void StartSingleplayerGame(){
-        gameManager.StartGame();
+        GameManager.GameCurrentMode = GameManager.GameType.Singleplayer;
+        OpenCharacterSelectMenu?.Invoke(this, EventArgs.Empty);
+        
     }
 
     public void StartMultiplayerGame(){

@@ -12,7 +12,7 @@ public class Piece : MonoBehaviour {
 
     
     public TetrominoData data;
-    public Vector3Int[] cells;
+    public Vector3Int[] cells = new Vector3Int[4];
     public Vector3Int position;
     public int rotationIndex;
     public float inputTimer;
@@ -35,9 +35,9 @@ public class Piece : MonoBehaviour {
         this.data = data;
         this.rotationIndex = 0;
         this.previousTime = Time.time;
-        this.lockTime= 0f;
+        this.lockTime = 0f;
 
-        if (this.cells.Length != data.cells.Length){
+        if (this.cells.Length != data.cells.Length) {
             this.cells = new Vector3Int[data.cells.Length];
         }
 
@@ -45,14 +45,13 @@ public class Piece : MonoBehaviour {
             this.cells[i] = (Vector3Int)data.cells[i];
         }
 
-        this.board.UpdateSyncBoard();
     }
 
     private void Awake() {
-        this.board = GetComponent<Board>();
-        this.controlsManager = GetComponent<ControlsManager>();
-        this.ghost = FindObjectOfType<Ghost>();
-        this.gameManager = GameManager.Singleton;
+        board = GetComponent<Board>();
+        controlsManager = FindObjectOfType<ControlsManager>();
+        ghost = FindObjectOfType<Ghost>();
+        gameManager = GameManager.Singleton;
 
         
     }
@@ -66,7 +65,7 @@ public class Piece : MonoBehaviour {
     }
 
     private void Update(){
-        this.board.Clear(this);
+        
 
         this.lockTime += Time.deltaTime;
 
@@ -95,13 +94,13 @@ public class Piece : MonoBehaviour {
             }
         }
 
-        this.board.Set(this);
+        
     }
 
     
     private void OnHold(){
-        this.ghost.Clear();
-        this.board.Hold(this);
+        ghost.Clear();
+        board.Hold(this);
     }
 
     private void Step(){
@@ -110,7 +109,7 @@ public class Piece : MonoBehaviour {
             return;
         }
 
-        this.previousTime = Time.time;
+        previousTime = Time.time;
 
         Move(Vector2Int.down);
 
@@ -128,13 +127,14 @@ public class Piece : MonoBehaviour {
     }
 
     private void Lock(){
-        this.board.Set(this);
-        this.board.ClearLines();
-        this.board.SpawnPiece();
-        this.board.holdOnce = true;
+        board.Set(this);
+        board.ClearLines();
+        board.SpawnPiece();
+        board.holdOnce = true;
     }
 
     private bool Move(Vector2Int translation){
+        board.Clear(this);
         Vector3Int newPosition = this.position;
         newPosition.x += translation.x;
         newPosition.y += translation.y;
@@ -146,11 +146,13 @@ public class Piece : MonoBehaviour {
             this.lockTime = 0f;
         }
 
-        this.board.UpdateSyncBoard();
+        board.Set(this);
+        ghost.UpdateGhostBoard();
         return valid;
     }
 
     private void Rotate(int direction){
+        board.Clear(this);
         int finalOrient = board.activePieceData.orient + direction;
 
         if (finalOrient == -1){
@@ -164,8 +166,9 @@ public class Piece : MonoBehaviour {
             board.activePieceData.orient = finalOrient;
 
         }
+        board.Set(this);
+        ghost.UpdateGhostBoard();
 
-        this.board.UpdateSyncBoard();
     }
 
     private bool TestSRS(int finalOrient){

@@ -18,20 +18,13 @@ public class Ghost : MonoBehaviour {
         this.cells = new Vector3Int[4];
     }
 
-    private void LateUpdate(){
-        Clear();
-        Copy();
-        Drop();
-        Set();
-    }
-
     public void Clear(){
-        this.tilemap.ClearAllTiles();
+        tilemap.ClearAllTiles();
     } 
 
     private void Copy(){
-        for (int i = 0; i < this.cells.Length; i++){
-            this.cells[i] = this.trackingPiece.cells[i];
+        for (int i = 0; i < cells.Length; i++){
+            cells[i] = trackingPiece.cells[i];
         }
     }
 
@@ -61,5 +54,12 @@ public class Ghost : MonoBehaviour {
             Vector3Int tilePosition = (Vector3Int)Data.originalOrient[(board.activePieceData.type * 4) + board.activePieceData.orient, i] + this.position;      //piece.cells[i] + piece.position;
             this.tilemap.SetTile(tilePosition, this.tile);
         }
+    }
+
+    public void UpdateGhostBoard(){
+        Clear();
+        Copy();
+        Drop();
+        Set();
     }
 }
