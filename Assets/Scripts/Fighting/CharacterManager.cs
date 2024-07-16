@@ -8,6 +8,8 @@ public class CharacterManager : MonoBehaviour {
     private NetworkPlayerManager enemyPlayerManager;
     private CharacterSelectMenu characterSelectMenu;
 
+    private GameManager gameManager;
+
     [SerializeField]
     private CharacterSO[] characterData;
     public CharacterSO currentCharacter;
@@ -24,6 +26,7 @@ public class CharacterManager : MonoBehaviour {
         currentCharacter = characterData[characterIndex];
         characterDataLength = characterData.Length; 
         characterSelectMenu = FindObjectOfType<CharacterSelectMenu>();
+        gameManager = GameManager.Singleton;
     }
 
     public void GetNetworkReference(NetworkGameManager script) {
@@ -44,10 +47,17 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public void Initialize() {
+        Debug.Log("Character Manager initialized");
         currentCharacterSkills = Instantiate(currentCharacter.characterSkills).GetComponent<CharacterSkills>();
 
-        enemyCharacter = characterData[enemyPlayerManager.network_syncCharacter.Value];
+        if (GameManager.GameCurrentMode == GameManager.GameType.Multiplayer) {
+            enemyCharacter = characterData[enemyPlayerManager.network_syncCharacter.Value];
+        } else {
+            enemyCharacter = characterData[0];
+        }
+        
         enemyCharacterSkills = Instantiate(enemyCharacter.characterSkills).GetComponent<CharacterSkills>();
+
     }
 
     public void CharacterSelect(int next) {

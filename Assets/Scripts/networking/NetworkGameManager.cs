@@ -60,6 +60,7 @@ public class NetworkGameManager : NetworkBehaviour
         if (IsHost){
             Debug.Log("is host");
             if (GameManager.GameCurrentMode == GameManager.GameType.Singleplayer){
+                InitializeCharacterManagerClientRPC();
                 LoadNextScene("Tetris");
             }
 
@@ -82,12 +83,23 @@ public class NetworkGameManager : NetworkBehaviour
         if (!IsServer){
             return;
         } 
-        
-        if (p1Ready && p2Ready && GameManager.GameCurrentMode == GameManager.GameType.Multiplayer && network_gameState.Value == GameManager.GameState.StartMenu){
-            network_gameState.Value = GameManager.GameState.CountdownScreen;
-            InitializeCharacterManagerClientRPC();
-            LoadNextScene("Tetris");
+
+        if (network_gameState.Value != GameManager.GameState.StartMenu) {
+            return;
         }
+
+        if (!p1Ready) {
+            return;
+        }
+
+        if (!p2Ready && GameManager.GameCurrentMode == GameManager.GameType.Multiplayer) {
+            return;
+        }
+        
+        network_gameState.Value = GameManager.GameState.CountdownScreen;
+        InitializeCharacterManagerClientRPC();
+        LoadNextScene("Tetris");
+        
 
 
     }

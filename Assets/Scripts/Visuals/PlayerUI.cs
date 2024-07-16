@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Security.Cryptography;
+using System;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -56,6 +57,7 @@ public class PlayerUI : MonoBehaviour
         healthText.text = networkPlayerManager.network_syncHealth.Value.ToString();
         manaText.text = networkPlayerManager.network_syncMana.Value.ToString();
 
+        Debug.Log(characterManager.enemyCharacter);
         maxHealth = "/" + characterManager.enemyCharacter.characterHealth.ToString();
         slider.maxValue = characterManager.enemyCharacter.characterHealth;
         slider.value = slider.maxValue;
